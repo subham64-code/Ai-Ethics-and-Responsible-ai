@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "name": "ai-ethics-presentation",
+  "builds": [
+    {
+      "src": "hello.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "/hello.html"
+    }
+  ]
+}
