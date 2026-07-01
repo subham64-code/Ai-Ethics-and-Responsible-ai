@@ -1,765 +1,3340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Ethics & Responsible AI — Class 3 to 8</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap');
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI for Kids – Class 3</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ── reset & base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            background: #f9f9ff;
+            color: #1B1F4B;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-  :root {
-    --purple:     #6C3FC1;
-    --purpleD:    #4A2D8A;
-    --purpleL:    #EDE7FF;
-    --teal:       #00B4A6;
-    --tealL:      #E0F7F5;
-    --yellow:     #FFD166;
-    --yellowD:    #E5A800;
-    --orange:     #FF6B35;
-    --pink:       #EF5DA8;
-    --white:      #FFFFFF;
-    --dark:       #2D1B5E;
-    --grad1: linear-gradient(135deg,#4A2D8A 0%,#6C3FC1 50%,#00B4A6 100%);
-    --grad2: linear-gradient(135deg,#FF6B35,#EF5DA8);
-    --grad3: linear-gradient(135deg,#00B4A6,#6C3FC1);
-  }
+        /* ── navbar ── */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(27, 31, 75, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 0.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 30px rgba(27, 31, 75, 0.25);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .navbar .brand {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .navbar .brand i {
+            color: #FFAE00;
+            margin-right: 8px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+        .nav-links a {
+            color: #cfd3f2;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            transition: all 0.25s;
+            background: transparent;
+            border: 1px solid transparent;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: rgba(124, 92, 252, 0.25);
+            color: #fff;
+            border-color: #7C5CFC;
+        }
+        .nav-stars {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 174, 0, 0.15);
+            border: 1px solid rgba(255, 174, 0, 0.4);
+            color: #FFAE00;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.9rem;
+            border-radius: 30px;
+        }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+        /* ── sections ── */
+        section {
+            padding: 5rem 1.5rem 3rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 100vh;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s ease forwards;
+        }
+        section:nth-of-type(1) {
+            padding-top: 6.5rem;
+        }
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-  body {
-    font-family:'Nunito', sans-serif;
-    background:#1a0a3e;
-    overflow-x:hidden;
-    overflow-y:auto;
-    min-height:100vh;
-    user-select:none;
-  }
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #7C5CFC;
+            margin-bottom: 0.2rem;
+        }
+        .section-title {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #1B1F4B;
+            line-height: 1.2;
+            margin-bottom: 0.3rem;
+        }
+        .section-sub {
+            font-size: 1.1rem;
+            color: #5B6178;
+            margin-bottom: 1.5rem;
+            max-width: 700px;
+        }
 
-  /* ── PARTICLE CANVAS ── */
-  #particles { position:fixed; inset:0; z-index:0; pointer-events:none; }
+        /* ── hero ── */
+        #home {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            background: linear-gradient(145deg, #1B1F4B 0%, #242A5E 100%);
+            border-radius: 0 0 3rem 3rem;
+            padding: 7rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        #home::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(124, 92, 252, 0.2) 0%, transparent 70%);
+            top: -100px;
+            right: -100px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            color: #cfd3f2;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        .hero-title {
+            font-size: 3.2rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+        .hero-title span {
+            color: #FFAE00;
+        }
+        .hero-desc {
+            font-size: 1.2rem;
+            color: #cfd3f2;
+            max-width: 600px;
+            margin-bottom: 1.8rem;
+            line-height: 1.6;
+        }
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.7rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            background: #7C5CFC;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(124, 92, 252, 0.35);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(124, 92, 252, 0.45);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            box-shadow: none;
+            color: #fff;
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #fff;
+        }
+        .btn-amber {
+            background: #FFAE00;
+            color: #1B1F4B;
+            box-shadow: 0 8px 24px rgba(255, 174, 0, 0.35);
+        }
+        .btn-teal {
+            background: #00BFB3;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(0, 191, 179, 0.35);
+        }
 
-  /* ── SLIDE WRAPPER ── */
-  #deck { position:relative; width:100vw; min-height:100vh; z-index:1; padding-bottom: 100px; }
+        .hero-chips {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .hero-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(6px);
+            padding: 0.4rem 1.2rem 0.4rem 0.8rem;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #cfd3f2;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .hero-chip .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-violet {
+            background: #7C5CFC;
+        }
+        .dot-teal {
+            background: #00BFB3;
+        }
+        .dot-amber {
+            background: #FFAE00;
+        }
 
-  .slide {
-    position:absolute; inset:0;
-    display:none; flex-direction:column;
-    opacity:0; pointer-events:none;
-    transition: opacity .45s ease, transform .45s ease; 
-    transform:scale(.97);
-  }
-  .slide.active { display:flex; opacity:1; pointer-events:all; transform:scale(1); }
+        .floating-emoji {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.5;
+            pointer-events: none;
+            animation: floatUpDown 6s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes floatUpDown {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-24px) rotate(10deg);
+            }
+        }
 
-  /* ── NAV & CONTROLS ── */
-  #nav {
-    position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
-    display:flex; gap:12px; align-items:center; z-index:100;
-    background:rgba(255,255,255,.12);
-    backdrop-filter:blur(10px);
-    padding:10px 22px; border-radius:50px;
-    border:1px solid rgba(255,255,255,.2);
-  }
-  #nav button {
-    background:none; border:none; color:#fff; cursor:pointer;
-    font-size:22px; padding:4px 10px; border-radius:30px;
-    transition:background .2s;
-  }
-  #nav button:hover { background:rgba(255,255,255,.2); }
-  
-  .dot {
-    width:11px; height:11px; border-radius:50%;
-    background:rgba(255,255,255,.3); cursor:pointer;
-    transition:all .3s;
-  }
-  .dot.on { background:#FFD166; transform:scale(1.3); }
+        /* ── cards ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .card {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 1.6rem 1.2rem;
+            box-shadow: 0 8px 30px rgba(27, 31, 75, 0.06);
+            border: 1px solid #e3e5f5;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(27, 31, 75, 0.10);
+        }
+        .card .icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 0.8rem;
+            color: #fff;
+        }
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+        }
+        .card p {
+            color: #5B6178;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .card .tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.15rem 0.8rem;
+            border-radius: 20px;
+            margin-top: 0.6rem;
+        }
 
-  /* Language Switcher Positioned over navigation bar */
-  #lang-switch {
-    display:flex; background:rgba(0,0,0,.3); border-radius:30px; padding:2px; margin: 0 10px;
-  }
-  .lang-btn {
-    background:none; border:none; color:rgba(255,255,255,.6); font-weight:800; font-size:13px;
-    padding:6px 14px; border-radius:20px; cursor:pointer; transition:all .2s;
-  }
-  .lang-btn.active {
-    background:var(--yellow); color:var(--dark); box-shadow:0 2px 8px rgba(0,0,0,0.2);
-  }
+        /* ── quiz / exam ── */
+        .quiz-container,
+        .exam-container {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(27, 31, 75, 0.06);
+            border: 1px solid #e3e5f5;
+            margin: 1.2rem 0;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .question-text i {
+            font-size: 1.6rem;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0.7rem 1.2rem;
+            background: #f5f6fe;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .option:hover {
+            background: #e8eaff;
+            border-color: #c8cef0;
+        }
+        .option.selected {
+            border-color: #7C5CFC;
+            background: #ede9ff;
+        }
+        .option.correct {
+            border-color: #00BFB3;
+            background: #e0f7f5;
+        }
+        .option.wrong {
+            border-color: #ff6b6b;
+            background: #ffe8e8;
+        }
+        .option .letter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #dde0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1B1F4B;
+            flex-shrink: 0;
+        }
+        .quiz-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            color: #5B6178;
+        }
+        .quiz-progress .bar {
+            flex: 1;
+            height: 6px;
+            background: #e3e5f5;
+            border-radius: 10px;
+            margin: 0 1rem;
+            overflow: hidden;
+        }
+        .quiz-progress .bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #7C5CFC, #00BFB3);
+            border-radius: 10px;
+            transition: width 0.4s;
+        }
+        .score-badge {
+            background: #1B1F4B;
+            color: #fff;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
 
-  /* ── PROGRESS ── */
-  #progress-bar {
-    position:fixed; top:0; left:0; height:4px;
-    background:var(--yellow);
-    transition:width .5s ease; z-index:200;
-  }
+        /* ── matching game ── */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.2rem 0;
+        }
+        .match-item {
+            padding: 0.8rem 0.6rem;
+            background: #fff;
+            border-radius: 14px;
+            border: 3px solid #e3e5f5;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 700;
+            transition: all 0.2s;
+            user-select: none;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .match-item:hover {
+            border-color: #7C5CFC;
+            background: #f5f4ff;
+        }
+        .match-item.matched {
+            border-color: #00BFB3;
+            background: #e0f7f5;
+            cursor: default;
+            opacity: 0.7;
+        }
+        .match-item.selected-match {
+            border-color: #FFAE00;
+            background: #fff3d6;
+        }
+        .match-item.wrong-match {
+            border-color: #ff6b6b;
+            background: #ffe8e8;
+            animation: shake 0.3s;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-8px);
+            }
+            75% {
+                transform: translateX(8px);
+            }
+        }
+        .match-col h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #5B6178;
+            margin-bottom: 0.6rem;
+            text-align: center;
+        }
 
-  /* ── SLIDE COUNTER ── */
-  #counter {
-    position:fixed; top:14px; right:20px;
-    color:rgba(255,255,255,.6); font-size:13px; z-index:200;
-    font-weight:700; letter-spacing:1px;
-  }
+        /* ── video cards ── */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .video-card {
+            background: #fff;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            border: 1px solid #e3e5f5;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .video-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(27, 31, 75, 0.08);
+        }
+        .video-card .thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1B1F4B;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #fff;
+            margin-bottom: 0.6rem;
+            position: relative;
+        }
+        .video-card .thumbnail i {
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+        .video-card:hover .thumbnail i {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        .video-card a {
+            display: inline-block;
+            margin-top: 0.3rem;
+            font-weight: 700;
+            color: #7C5CFC;
+        }
 
-  /* ══════════════════════════════
-       SLIDE 1 — TITLE
-     ══════════════════════════════ */
-  #s1 { background: var(--grad1); justify-content:center; align-items:center; text-align:center; }
-  .s1-robot { font-size:110px; line-height:1; animation: float 3s ease-in-out infinite; filter:drop-shadow(0 0 30px rgba(255,209,102,.5)); }
-  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+        /* ── interactive demos ── */
+        .demo-box {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 1.8rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(27, 31, 75, 0.06);
+            border: 1px solid #e3e5f5;
+            margin: 1.2rem 0;
+        }
+        .demo-box .demo-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .demo-box input[type="range"] {
+            width: 80%;
+            margin: 0.5rem 0;
+        }
+        .demo-box input[type="number"] {
+            padding: 0.4rem 0.8rem;
+            border-radius: 10px;
+            border: 2px solid #dde0f0;
+            font-size: 1rem;
+            width: 120px;
+        }
+        .prediction-result {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #7C5CFC;
+            margin: 0.8rem 0;
+        }
+        .voice-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.6rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 700;
+            border: none;
+            background: #00BFB3;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .voice-btn:hover {
+            transform: scale(1.05);
+        }
+        .voice-btn.recording {
+            background: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+        .transcript-box {
+            background: #f5f6fe;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            margin: 0.8rem 0;
+            font-size: 1.1rem;
+            min-height: 3rem;
+        }
+        .video-feed {
+            max-width: 100%;
+            border-radius: 1rem;
+            background: #1B1F4B;
+            margin: 0.5rem 0;
+        }
+        .face-boxes {
+            position: relative;
+            display: inline-block;
+        }
+        .face-boxes canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
 
-  .s1-title {
-    font-family:'Fredoka One',cursive; font-size:clamp(42px,6vw,76px); color:#fff;
-    text-shadow:0 4px 20px rgba(0,0,0,.3); line-height:1.1; margin:16px 0 10px;
-    animation: popIn .8s cubic-bezier(.34,1.56,.64,1) .2s both;
-  }
-  .s1-sub { font-size:clamp(18px,2.5vw,28px); color:var(--yellow); font-weight:800; animation: popIn .8s cubic-bezier(.34,1.56,.64,1) .5s both; }
-  .s1-pill { margin-top:24px; background:rgba(255,255,255,.15); backdrop-filter:blur(8px); border:2px solid rgba(255,255,255,.3); color:#fff; font-size:17px; font-weight:700; padding:12px 34px; border-radius:50px; animation: popIn .8s cubic-bezier(.34,1.56,.64,1) .8s both; }
-  .s1-topics { margin-top: 40px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap; animation: slideUp .8s ease 1.1s both; }
-  .s1-chip { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); color:#fff; font-size:13px; font-weight:700; padding:6px 16px; border-radius:30px; letter-spacing:.5px; }
-  .s1-stars { position:absolute; inset:0; pointer-events:none; }
-  .star { position:absolute; border-radius:50%; animation:twinkle var(--d,2s) ease-in-out infinite var(--dl,0s); }
-  @keyframes twinkle { 0%,100%{opacity:.3;transform:scale(1)} 50%{opacity:1;transform:scale(1.4)} }
+        /* ── charts ── */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        .chart-box {
+            background: #fff;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            border: 1px solid #e3e5f5;
+            box-shadow: 0 4px 16px rgba(27, 31, 75, 0.04);
+        }
+        .chart-box h4 {
+            text-align: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.95rem;
+        }
 
-  @keyframes popIn { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:scale(1)} }
-  @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes slideInL { from{opacity:0;transform:translateX(-60px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes slideInR { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes bounceIn { 0%{opacity:0;transform:scale(.3)} 50%{transform:scale(1.05)} 70%{transform:scale(.95)} 100%{opacity:1;transform:scale(1)} }
+        /* ── exam timer ── */
+        .exam-timer {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1B1F4B;
+            margin-bottom: 1rem;
+        }
+        .exam-timer .time {
+            background: #1B1F4B;
+            color: #fff;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 1.4rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .exam-timer .time.warning {
+            background: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
 
-  /* ══════════════════════════════
-       SLIDE HEADER & STRUCTURES
-     ══════════════════════════════ */
-  .slide-header { background:var(--purple); padding:18px 36px; display:flex; align-items:center; gap:14px; flex-shrink:0; }
-  .slide-header .icon { font-size:38px; }
-  .slide-header h2 { font-family:'Fredoka One',cursive; font-size:clamp(28px,4vw,42px); color:#fff; letter-spacing:.5px; }
+        .result-box {
+            text-align: center;
+            padding: 2rem;
+        }
+        .result-box .big-score {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #7C5CFC;
+        }
+        .result-box .big-score span {
+            color: #1B1F4B;
+            font-size: 2rem;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .fade-in {
+            animation: fadeUp 0.6s ease forwards;
+        }
 
-  .quote-banner { background:var(--yellow); margin:18px 30px 0; padding:14px 24px; border-radius:14px; font-size:clamp(14px,2vw,20px); font-weight:800; color:var(--dark); text-align:center; box-shadow:0 6px 20px rgba(255,209,102,.4); animation: popIn .7s cubic-bezier(.34,1.56,.64,1) .2s both; }
-  .activity-bar { background:var(--purpleL); margin:14px 30px 16px; padding:12px 22px; border-radius:12px; font-size:15px; font-weight:800; color:var(--dark); text-align:center; }
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #5B6178;
+            font-size: 0.8rem;
+            border-top: 1px solid #e3e5f5;
+            margin-top: 2rem;
+        }
+        .footer i {
+            color: #FFAE00;
+        }
 
-  /* ── PILLARS ── */
-  .pillars { display:flex; gap:16px; padding:18px 30px 0; flex:1; justify-content:center; }
-  .pillar { flex:1; border-radius:20px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px 10px; cursor:pointer; box-shadow:0 8px 30px rgba(0,0,0,.12); transition:transform .3s, box-shadow .3s; animation: bounceIn .7s cubic-bezier(.34,1.56,.64,1) both; position:relative; overflow:hidden; }
-  .pillar::before { content:''; position:absolute; inset:0; background:rgba(255,255,255,.1); opacity:0; transition:opacity .3s; }
-  .pillar:hover { transform:translateY(-10px) scale(1.04); box-shadow:0 20px 50px rgba(0,0,0,.2); }
-  .pillar:hover::before { opacity:1; }
-  .pillar .icon { font-size:52px; margin-bottom:12px; }
-  .pillar .label { font-family:'Fredoka One',cursive; font-size:22px; color:#fff; margin-bottom:8px; }
-  .pillar .desc { font-size:13px; color:rgba(255,255,255,.9); text-align:center; font-weight:600; line-height:1.4; }
+        /* ── regression playground ── */
+        .reg-wrap {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .reg-canvas-holder {
+            flex: 1 1 380px;
+            background: #f5f6fe;
+            border-radius: 1rem;
+            border: 2px dashed #c8cef0;
+            position: relative;
+            overflow: hidden;
+        }
+        #regCanvas {
+            width: 100%;
+            display: block;
+            cursor: crosshair;
+            border-radius: 1rem;
+        }
+        .reg-side {
+            flex: 0 0 220px;
+        }
+        .reg-side p {
+            color: #5B6178;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.5;
+        }
+        .reg-stat {
+            background: #fff;
+            border: 1px solid #e3e5f5;
+            border-radius: 12px;
+            padding: 0.6rem 1rem;
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .reg-stat span {
+            color: #7C5CFC;
+        }
+        .reg-stars {
+            font-size: 1.4rem;
+            letter-spacing: 4px;
+        }
 
-  /* ── PRIVACY & BIAS ── */
-  #s3 { background:#f8f4ff; }
-  .two-col { display:flex; flex:1; }
-  .col-left { background:var(--tealL); flex:1; padding:22px 24px; display:flex; flex-direction:column; gap:14px; }
-  .col-right { flex:1; padding:22px 24px; display:flex; flex-direction:column; gap:14px; background:#fff; }
-  .col-title { font-family:'Fredoka One',cursive; font-size:clamp(22px,3vw,32px); display:flex; align-items:center; gap:10px; }
-  .data-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .data-chip { background:rgba(0,180,166,.15); border:2px solid rgba(0,180,166,.3); border-radius:12px; padding:12px 8px; text-align:center; font-weight:800; font-size:14px; color:var(--dark); cursor:pointer; transition:all .3s; display:flex; align-items:center; justify-content:center; gap:6px; }
-  .data-chip:hover { background:var(--teal); color:#fff; transform:scale(1.05); }
-  .data-chip.danger { animation:pulse 1s ease-in-out 3; }
-  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
-  .tip-box { background:var(--teal); color:#fff; border-radius:14px; padding:12px 16px; font-weight:800; font-size:14px; text-align:center; box-shadow:0 4px 18px rgba(0,180,166,.3); }
+        /* ── classification sort game ── */
+        .sort-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+        .sort-tray {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            min-height: 90px;
+            padding: 0.8rem;
+            background: #f5f6fe;
+            border-radius: 1rem;
+            border: 2px dashed #c8cef0;
+        }
+        .sort-item {
+            background: #fff;
+            border: 3px solid #e3e5f5;
+            border-radius: 16px;
+            width: 78px;
+            height: 78px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: grab;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .sort-item span.name {
+            font-size: 0.55rem;
+            font-weight: 700;
+            color: #5B6178;
+            margin-top: 2px;
+        }
+        .sort-item:hover {
+            transform: translateY(-3px);
+            border-color: #7C5CFC;
+        }
+        .sort-item.selected {
+            border-color: #FFAE00;
+            background: #fff3d6;
+        }
+        .sort-item.dragging {
+            opacity: 0.4;
+        }
+        .sort-buckets {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .sort-bucket {
+            min-height: 140px;
+            border-radius: 1.2rem;
+            border: 3px solid;
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .sort-bucket h4 {
+            text-align: center;
+            font-size: 1rem;
+        }
+        .sort-bucket .items {
+            flex: 1;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            min-height: 60px;
+        }
+        .bucket-a {
+            background: #ede9ff;
+            border-color: #7C5CFC;
+        }
+        .bucket-a h4 {
+            color: #7C5CFC;
+        }
+        .bucket-b {
+            background: #e0f7f5;
+            border-color: #00BFB3;
+        }
+        .bucket-b h4 {
+            color: #00BFB3;
+        }
+        .sort-item.correct-flash {
+            border-color: #00BFB3 !important;
+            background: #e0f7f5 !important;
+        }
+        .sort-item.wrong-flash {
+            border-color: #ff6b6b !important;
+            background: #ffe8e8 !important;
+            animation: shake 0.3s;
+        }
+        .sort-status {
+            font-weight: 700;
+            color: #5B6178;
+        }
 
-  /* Infographic Balance Scale Layout for Bias */
-  .scale-container { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; border-radius: 16px; padding: 15px; border: 2px dashed #ccc; margin-top: 10px; }
-  .scale-graphic { font-size: 50px; transition: transform 0.5s ease; animation: balanceSwing 3s ease-in-out infinite; }
-  @keyframes balanceSwing { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-  .bias-flow { display:flex; flex-direction:column; gap:8px; flex:1; justify-content:center; }
-  .flow-box { border-radius:12px; padding:13px 18px; font-weight:800; font-size:14px; color:#fff; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,.15); animation: slideInR .6s ease both; }
-  .flow-arrow { text-align:center; font-size:20px; color:var(--orange); animation: bounceDown 1s ease-in-out infinite; }
-  @keyframes bounceDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
-  .fix-box { background:var(--teal); border-radius:12px; padding:12px 18px; font-weight:800; font-size:14px; color:#fff; text-align:center; border:3px solid #fff; box-shadow:0 4px 18px rgba(0,180,166,.3); }
+        /* ── clustering game ── */
+        .cluster-field {
+            position: relative;
+            background: #f5f6fe;
+            border-radius: 1rem;
+            border: 2px dashed #c8cef0;
+            height: 340px;
+            overflow: hidden;
+        }
+        .cluster-dot {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(27, 31, 75, 0.15);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .cluster-dot:hover {
+            transform: scale(1.1);
+        }
+        .cluster-dot.picked {
+            border-color: #1B1F4B;
+            box-shadow: 0 0 0 4px rgba(27, 31, 75, 0.15);
+        }
+        .cluster-dot.grouped {
+            opacity: 0.35;
+            cursor: default;
+        }
+        .cluster-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+        }
 
-  /* ── MISINFORMATION ── */
-  #s4 { background:#fff8f0; }
-  .s4-body { display:flex; flex:1; }
-  .s4-left { flex:1; padding:20px 24px; display:flex; flex-direction:column; gap:12px; }
-  .s4-right { flex:1; background:rgba(108,63,193,.05); padding:20px 24px; display:flex; flex-direction:column; gap:12px; border-left:3px solid var(--purpleL); }
-  
-  /* Media Showcase Mockups corresponding to image */
-  .media-showcase { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-  .media-card { background: #fff; border: 2px solid #e1e1e1; border-radius: 12px; padding: 10px; text-align: center; font-size: 13px; font-weight: 700; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
-  .media-card.fake { border-color: var(--orange); background: #fff5f2; }
-  .media-title { font-size: 11px; text-transform: uppercase; color: #ff3b30; font-weight: 900; margin-bottom: 4px; }
+        /* ── toast / confetti ── */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120%);
+            background: #1B1F4B;
+            color: #fff;
+            padding: 0.7rem 1.6rem;
+            border-radius: 40px;
+            font-weight: 700;
+            z-index: 3000;
+            transition: transform 0.35s ease;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        .confetti-piece {
+            position: fixed;
+            top: -20px;
+            width: 10px;
+            height: 14px;
+            z-index: 2999;
+            pointer-events: none;
+            animation: confettiFall linear forwards;
+        }
+        @keyframes confettiFall {
+            to {
+                transform: translateY(105vh) rotate(540deg);
+                opacity: 0.8;
+            }
+        }
 
-  .chain-item { border-radius:14px; padding:13px 18px; color:#fff; font-weight:800; font-size:14px; display:flex; align-items:center; gap:12px; box-shadow:0 4px 16px rgba(0,0,0,.15); animation: slideInL .5s ease both; }
-  .chain-item .num { background:rgba(255,255,255,.2); border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
-  .check-list { display:flex; flex-direction:column; gap:8px; }
-  .check-item { background:#fff; border-radius:12px; padding:11px 16px; font-weight:700; font-size:14px; display:flex; align-items:center; gap:10px; box-shadow:0 3px 12px rgba(0,0,0,.08); animation: slideInR .5s ease both; border-left:4px solid var(--teal); color:var(--dark); }
-  
-  .who-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .who-card { background:#fff; border-radius:14px; padding:14px 12px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,.1); animation:bounceIn .6s ease both; transition:transform .3s; cursor:pointer; }
-  .who-card:hover { transform:scale(1.05); }
-  .who-card .we { font-size:32px; }
-  .who-card .wt { font-weight:800; font-size:14px; color:var(--purple); margin:4px 0 2px; }
-  .who-card .wd { font-size:12px; color:#666; font-weight:600; }
+        /* ── mascot ── */
+        #mascot {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            font-size: 2.6rem;
+            z-index: 2500;
+            cursor: pointer;
+            animation: mascotBob 2.4s ease-in-out infinite;
+            filter: drop-shadow(0 6px 14px rgba(27, 31, 75, 0.35));
+        }
+        @keyframes mascotBob {
+            0%,
+            100% {
+                transform: translateY(0) rotate(-4deg);
+            }
+            50% {
+                transform: translateY(-12px) rotate(4deg);
+            }
+        }
+        #mascotBubble {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            max-width: 220px;
+            background: #fff;
+            border: 2px solid #7C5CFC;
+            border-radius: 18px 18px 4px 18px;
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1B1F4B;
+            box-shadow: 0 8px 24px rgba(27, 31, 75, 0.18);
+            z-index: 2500;
+            opacity: 0;
+            transform: translateY(10px) scale(0.9);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+        #mascotBubble.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
 
-  /* ── QUIZ ── */
-  #s5 { background:var(--grad1); }
-  .quiz-header { text-align:center; padding:20px; flex-shrink:0; }
-  .quiz-header h2 { font-family:'Fredoka One',cursive; font-size:clamp(32px,5vw,58px); color:var(--yellow); text-shadow:0 4px 20px rgba(0,0,0,.3); }
-  .quiz-header p { color:rgba(255,255,255,.8); font-weight:700; font-size:16px; margin-top:4px; }
-  .quiz-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; padding:0 24px 16px; }
-  .qcard { background:rgba(255,255,255,.12); backdrop-filter:blur(10px); border:2px solid rgba(255,255,255,.2); border-radius:20px; padding:20px; cursor:pointer; transition:all .3s; display:flex; flex-direction:column; gap:12px; animation:fadeUp .6s ease both; }
-  .qcard:hover { background:rgba(255,255,255,.2); transform:translateY(-4px); }
-  .qcard.revealed { border-color:var(--yellow); background:rgba(255,255,255,.18); }
-  .qcard .qnum { background:var(--yellow); color:var(--dark); width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:16px; flex-shrink:0; }
-  .qcard .question { color:#fff; font-weight:800; font-size:clamp(13px,1.8vw,16px); line-height:1.4; flex:1; }
-  .qcard .answer { background:var(--yellow); color:var(--dark); border-radius:10px; padding:10px 14px; font-weight:800; font-size:14px; display:none; animation:popIn .5s ease; }
-  .qcard.revealed .answer { display:block; }
-  .tap-hint { color:rgba(255,255,255,.6); font-size:13px; text-align:center; margin-top:-4px; font-weight:700; }
-  .summary-bar { background:var(--yellow); padding:14px; text-align:center; font-weight:900; font-size:clamp(13px,2vw,17px); color:var(--dark); }
+        /* ── odia speaker ── */
+        .odia-card {
+            background: linear-gradient(135deg, #fff 0%, #f5f6fe 100%);
+        }
+        .odia-word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        .odia-word-chip {
+            background: #fff;
+            border: 2px solid #e3e5f5;
+            border-radius: 14px;
+            padding: 0.6rem 0.4rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 700;
+        }
+        .odia-word-chip:hover {
+            border-color: #FFAE00;
+            transform: translateY(-3px);
+            background: #fff8e6;
+        }
+        .odia-word-chip .emoji {
+            font-size: 1.6rem;
+            display: block;
+        }
+        .odia-result {
+            background: #1B1F4B;
+            color: #fff;
+            border-radius: 1rem;
+            padding: 1.2rem 1.5rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .odia-result .odia-script {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #FFAE00;
+            margin: 0.3rem 0;
+        }
+        .odia-result .odia-roman {
+            color: #cfd3f2;
+            font-size: 1rem;
+        }
+        .odia-status {
+            font-size: 0.85rem;
+            color: #5B6178;
+            margin-top: 0.3rem;
+        }
 
-  /* ── EMOJI BURST ── */
-  .burst { position:fixed; pointer-events:none; z-index:9999; font-size:30px; animation:burstAnim .8s ease forwards; }
-  @keyframes burstAnim { 0%{opacity:1;transform:translate(0,0) scale(1)} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0.5)} }
+        /* ── snap & guess ── */
+        .snap-preview-wrap {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 480px;
+        }
+        #snapCanvas,
+        #snapVideo {
+            width: 100%;
+            border-radius: 1rem;
+            background: #1B1F4B;
+        }
+        .snap-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+        .snap-tag {
+            background: #ede9ff;
+            border: 2px solid #7C5CFC;
+            color: #7C5CFC;
+            font-weight: 800;
+            padding: 0.4rem 1rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: popIn 0.35s ease;
+        }
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
 
-  /* ── ENHANCED ANIMATIONS ── */
-  @keyframes glow { 0%, 100% { box-shadow: 0 0 10px rgba(255, 209, 102, 0.5); } 50% { box-shadow: 0 0 30px rgba(255, 209, 102, 0.8); } }
-  @keyframes wiggle { 0%, 7%, 14% { transform: rotateZ(0); } 3.5% { transform: rotateZ(-5deg); } 10.5% { transform: rotateZ(5deg); } }
-  @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-  @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
-  @keyframes slideInFade { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  @keyframes morphShape { 0% { border-radius: 50%; } 50% { border-radius: 10%; } 100% { border-radius: 50%; } }
-  @keyframes typing { from { width: 0; } to { width: 100%; } }
-  
-  /* ── INTERACTIVE HOVER EFFECTS ── */
-  .interactive-element:hover { animation: wiggle 0.5s ease-in-out; cursor: pointer; }
-  .glow-effect { animation: glow 2s ease-in-out infinite; }
-  .heartbeat-effect { animation: heartbeat 1.5s ease-in-out infinite; }
-  .rainbow-effect { animation: rainbow 3s linear infinite; }
-  
-  /* ── FLOATING ELEMENTS ── */
-  .floating-icon { position: absolute; animation: float 6s ease-in-out infinite; font-size: 2rem; opacity: 0.7; }
-  .floating-icon:nth-child(odd) { animation-delay: -2s; }
-  .floating-icon:nth-child(even) { animation-delay: -4s; }
-  
-  /* ── GRADIENT BACKGROUNDS ── */
-  .gradient-bg-1 { background: linear-gradient(45deg, #FF6B35, #F7931E, #FFD166); }
-  .gradient-bg-2 { background: linear-gradient(45deg, #EF5DA8, #C44569, #6C3FC1); }
-  .gradient-bg-3 { background: linear-gradient(45deg, #00B4A6, #0078AA, #005F73); }
-  
-  /* ── ENHANCED MEDIA CARDS ── */
-  .media-card { transition: all 0.3s ease; transform-style: preserve-3d; }
-  .media-card:hover { transform: rotateY(10deg) translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-  
-  /* ── TYPING EFFECT ── */
-  .typing-text { overflow: hidden; white-space: nowrap; border-right: 2px solid; animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite; }
-  @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: #FFD166; } }
-  
-  /* ── ENHANCED PILLARS ── */
-  .pillar::after { content: '✨'; position: absolute; top: 10px; right: 10px; opacity: 0; transition: all 0.3s ease; animation: twinkle 2s ease-in-out infinite; }
-  .pillar:hover::after { opacity: 1; }
-  
-  /* ── BACKGROUND PATTERNS ── */
-  .pattern-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0); background-size: 20px 20px; pointer-events: none; }
-  
-  /* ── ENHANCED NAVIGATION ── */
-  #nav { box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: all 0.3s ease; }
-  #nav:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+        /* ── draw & guess ── */
+        .draw-wrap {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        #drawCanvas {
+            background: #fff;
+            border-radius: 1rem;
+            border: 3px dashed #c8cef0;
+            touch-action: none;
+            cursor: crosshair;
+            width: 100%;
+            max-width: 420px;
+            height: 340px;
+        }
+        .draw-side {
+            flex: 1 1 220px;
+        }
+        .draw-guess-result {
+            background: #fff;
+            border: 2px solid #e3e5f5;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .draw-guess-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+            font-weight: 700;
+        }
+        .draw-guess-bar {
+            flex: 1;
+            height: 10px;
+            background: #e3e5f5;
+            border-radius: 10px;
+            margin: 0 0.8rem;
+            overflow: hidden;
+        }
+        .draw-guess-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7C5CFC, #00BFB3);
+            border-radius: 10px;
+        }
+        .color-swatches {
+            display: flex;
+            gap: 0.5rem;
+            margin: 0.6rem 0;
+            flex-wrap: wrap;
+        }
+        .color-swatch {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 2px #e3e5f5;
+            transition: 0.2s;
+        }
+        .color-swatch.active {
+            box-shadow: 0 0 0 3px #1B1F4B;
+        }
 
-  /* Responsive Design Handles Stack Layouts */
-  @media(max-width:850px) {
-    .two-col, .s4-body { flex-direction:column; }
-    .pillars { flex-direction:column; padding:10px 14px 0; }
-    .quiz-grid { grid-template-columns:1fr; }
-    #deck { padding-bottom: 140px; }
-  }
-</style>
+        /* ── fun fact ── */
+        .funfact-box {
+            background: linear-gradient(135deg, #7C5CFC 0%, #00BFB3 100%);
+            color: #fff;
+            border-radius: 1.5rem;
+            padding: 1.6rem 1.8rem;
+            margin: 1.2rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .funfact-box .icon {
+            font-size: 2.6rem;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        @keyframes wiggle {
+            0%,
+            100% {
+                transform: rotate(-8deg);
+            }
+            50% {
+                transform: rotate(8deg);
+            }
+        }
+        .funfact-text {
+            flex: 1;
+            min-width: 200px;
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 1rem;
+            }
+            .nav-links a {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.6rem;
+            }
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .match-grid {
+                grid-template-columns: 1fr;
+            }
+            #home {
+                padding: 6rem 1.2rem 3rem;
+                border-radius: 0 0 2rem 2rem;
+            }
+            section {
+                padding: 4rem 1rem 2rem;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+            .sort-buckets {
+                grid-template-columns: 1fr;
+            }
+            #mascot,
+            #mascotBubble {
+                right: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="particles"></canvas>
-<div id="progress-bar"></div>
-<div id="counter">1 / 5</div>
+    <!-- NAV -->
+    <nav class="navbar">
+        <div class="brand"><i class="fas fa-robot"></i> AI for Kids</div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#domains">Domains</a></li>
+            <li><a href="#techniques">Techniques</a></li>
+            <li><a href="#regression">Regression</a></li>
+            <li><a href="#classify">Classify</a></li>
+            <li><a href="#cluster">Cluster</a></li>
+            <li><a href="#quiz">Quiz</a></li>
+            <li><a href="#game">Game</a></li>
+            <li><a href="#exam">Exam</a></li>
+            <li><a href="#predictor">Predictor</a></li>
+            <li><a href="#voice">Voice</a></li>
+            <li><a href="#odia">Odia</a></li>
+            <li><a href="#snap">Snap&nbsp;It</a></li>
+            <li><a href="#draw">Draw&nbsp;It</a></li>
+            <li><a href="#face">Face</a></li>
+            <li><a href="#videos">Videos</a></li>
+            <li><a href="#charts">Plots</a></li>
+        </ul>
+        <div class="nav-stars"><i class="fas fa-star"></i> <span id="totalStars">0</span></div>
+    </nav>
 
-<div id="deck">
+    <!-- HERO -->
+    <section id="home">
+        <div class="hero-content">
+            <div class="hero-badge"><i class="fas fa-star"></i> Class 3 · AI Adventure</div>
+            <h1 class="hero-title">AI is <span>Super Fun!</span></h1>
+            <p class="hero-desc">
+                Learn how computers can see, talk, draw, and predict things – just like us!
+            </p>
+            <div class="hero-actions">
+                <a href="#domains" class="btn"><i class="fas fa-rocket"></i> Explore</a>
+                <a href="#quiz" class="btn btn-outline"><i class="fas fa-question-circle"></i> Quiz</a>
+                <a href="#game" class="btn btn-amber"><i class="fas fa-gamepad"></i> Game</a>
+                <a href="#draw" class="btn btn-teal"><i class="fas fa-paintbrush"></i> Draw & Guess</a>
+            </div>
+            <div class="hero-chips">
+                <span class="hero-chip"><span class="dot dot-violet"></span> Data Science</span>
+                <span class="hero-chip"><span class="dot dot-teal"></span> Computer Vision</span>
+                <span class="hero-chip"><span class="dot dot-amber"></span> NLP</span>
+            </div>
+        </div>
+        <div class="scroll-hint" style="position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.3);font-size:0.7rem;letter-spacing:2px;animation:bob 2s infinite;z-index:2;"><i class="fas fa-chevron-down"></i> Scroll</div>
+        <style>
+            @keyframes bob {
+                0%,
+                100% {
+                    transform: translateX(-50%) translateY(0);
+                }
+                50% {
+                    transform: translateX(-50%) translateY(8px);
+                }
+            }
+        </style>
+    </section>
 
-  <div class="slide active" id="s1">
-    <div class="pattern-overlay"></div>
-    <div class="s1-stars" id="stars"></div>
-    
-    <!-- Floating decorative elements -->
-    <div class="floating-icon" style="top: 10%; left: 15%;">🌟</div>
-    <div class="floating-icon" style="top: 20%; right: 10%;">✨</div>
-    <div class="floating-icon" style="bottom: 30%; left: 10%;">🚀</div>
-    <div class="floating-icon" style="bottom: 20%; right: 20%;">💡</div>
-    <div class="floating-icon" style="top: 60%; left: 5%;">🎯</div>
-    <div class="floating-icon" style="top: 50%; right: 8%;">🔮</div>
-    
-    <div class="s1-robot heartbeat-effect glow-effect interactive-element">🤖</div>
-    <h1 class="s1-title typing-text" data-key="s1_title">AI Ethics &<br>Responsible AI</h1>
-    <p class="s1-sub" data-key="s1_sub">A Fun Journey for Curious Minds! 🚀</p>
-    <div class="s1-pill interactive-element" data-key="s1_pill">For Students of Class 3 to 8</div>
-    <div class="s1-topics">
-      <span class="s1-chip interactive-element gradient-bg-1" data-key="chip1">🤖 What is AI Ethics?</span>
-      <span class="s1-chip interactive-element gradient-bg-2" data-key="chip2">🔒 Privacy</span>
-      <span class="s1-chip interactive-element gradient-bg-3" data-key="chip3">⚖️ Bias & Fairness</span>
-      <span class="s1-chip interactive-element gradient-bg-1" data-key="chip4">📢 Misinformation</span>
-      <span class="s1-chip interactive-element gradient-bg-2" data-key="chip5">👤 Accountability</span>
-    </div>
-  </div>
-
-  <div class="slide" id="s2">
-    <div class="slide-header">
-      <span class="icon">✨</span>
-      <h2 data-key="s2_title">What is AI Ethics?</h2>
-    </div>
-    <div class="quote-banner" data-key="s2_banner">
-      💬 &nbsp;"Ethics asks: What SHOULD technology do — not just what CAN it do?"
-    </div>
-    <div class="pillars">
-      <div class="pillar interactive-element" style="background:#00B4A6;animation-delay:.1s" onclick="burst(this,'🌟')">
-        <div class="icon heartbeat-effect">⚖️</div>
-        <div class="label" data-key="p1_l">FAIR</div>
-        <div class="desc" data-key="p1_d">Treats every person equally, no exceptions!</div>
-      </div>
-      <div class="pillar interactive-element" style="background:#FF6B35;animation-delay:.25s" onclick="burst(this,'🔥')">
-        <div class="icon rainbow-effect">🛡️</div>
-        <div class="label" data-key="p2_l">SAFE</div>
-        <div class="desc" data-key="p2_d">Protects people from harm & danger</div>
-      </div>
-      <div class="pillar interactive-element" style="background:#EF5DA8;animation-delay:.4s" onclick="burst(this,'👀')">
-        <div class="icon glow-effect">🔍</div>
-        <div class="label" data-key="p3_l">TRANSPARENT</div>
-        <div class="desc" data-key="p3_d">Honest & open about how it works</div>
-      </div>
-      <div class="pillar interactive-element" style="background:#6C3FC1;animation-delay:.55s" onclick="burst(this,'💜')">
-        <div class="icon heartbeat-effect">🤝</div>
-        <div class="label" data-key="p4_l">HELPFUL</div>
-        <div class="desc" data-key="p4_d">Benefits everyone in society — you too!</div>
-      </div>
-    </div>
-    <div class="activity-bar" data-key="s2_act">
-      🎯 <b>THINK & SHARE:</b> If a robot delivers food faster to rich areas but ignores poor areas — is it ethical? Why?
-    </div>
-  </div>
-
-  <div class="slide" id="s3">
-    <div class="slide-header" style="background:var(--teal)">
-      <span class="icon">🔒</span>
-      <h2 data-key="s3_title">Privacy & Bias in AI</h2>
-    </div>
-    <div class="two-col">
-      <div class="col-left">
-        <div class="col-title" style="color:var(--teal)" data-key="s3_l_title">🔒 Privacy</div>
-        <p style="font-weight:700;font-size:14px;color:var(--dark)" data-key="s3_l_desc">
-          Privacy = <b>YOUR control</b> over your personal info.<br>Tap any item to see if it's RISKY to share!
+    <!-- DOMAINS -->
+    <section id="domains">
+        <span class="section-label"><i class="fas fa-cubes"></i> Three Superpowers</span>
+        <h2 class="section-title">What Can AI Do?</h2>
+        <p class="section-sub">AI has three main abilities – just like our brain, eyes, and voice!</p>
+        <div class="card-grid">
+            <div class="card">
+                <div class="icon-wrap" style="background:#7C5CFC;"><i class="fas fa-brain"></i></div>
+                <span class="tag" style="background:#7C5CFC20;color:#7C5CFC;">Data Science</span>
+                <h3>🧮 Find Patterns</h3>
+                <p>AI looks at numbers and words to guess what will happen next.</p>
+                <p style="font-size:0.8rem;color:#7C5CFC;font-weight:600;">e.g. Predict weather, sort emails</p>
+            </div>
+            <div class="card">
+                <div class="icon-wrap" style="background:#00BFB3;"><i class="fas fa-eye"></i></div>
+                <span class="tag" style="background:#00BFB320;color:#00BFB3;">Computer Vision</span>
+                <h3>📷 See the World</h3>
+                <p>AI can recognise faces, objects, and even read handwriting!</p>
+                <p style="font-size:0.8rem;color:#00BFB3;font-weight:600;">e.g. Face unlock, medical scans</p>
+            </div>
+            <div class="card">
+                <div class="icon-wrap" style="background:#FFAE00;"><i class="fas fa-comment-dots"></i></div>
+                <span class="tag" style="background:#FFAE0020;color:#B87A00;">NLP</span>
+                <h3>🗣️ Understand Words</h3>
+                <p>AI reads, listens, and talks back to us in our own language.</p>
+                <p style="font-size:0.8rem;color:#FFAE00;font-weight:600;">e.g. Chatbots, translation</p>
+            </div>
+        </div>
+        <p style="font-style:italic;color:#5B6178;font-size:0.95rem;">
+            <i class="fas fa-arrow-right" style="color:#7C5CFC;"></i> Many smart devices use all three together!
         </p>
-        <div class="data-grid">
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'loc')">📍 <span data-key="c_loc">Location</span></div>
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'pho')">📸 <span data-key="c_pho">Photos</span></div>
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'pas')">🔑 <span data-key="c_pas">Passwords</span></div>
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'bnk')">💳 <span data-key="c_bnk">Bank Details</span></div>
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'cnt')">📞 <span data-key="c_cnt">Contacts</span></div>
-          <div class="data-chip interactive-element" onclick="revealRisk(this,'hth')">🏥 <span data-key="c_hth">Health Info</span></div>
-        </div>
-        <div class="tip-box" id="risk-tip" data-key="risk_hint">👆 Tap a card above to learn about it!</div>
-        <div class="activity-bar" style="margin:0;font-size:13px;" data-key="s3_act1">
-          🎯 <b>ACTIVITY:</b> Would you share your location with a game app? Discuss!
-        </div>
-      </div>
+    </section>
 
-      <div class="col-right">
-        <div class="col-title" style="color:var(--orange)" data-key="s3_r_title">⚖️ Bias in AI</div>
-        <p style="font-weight:700;font-size:14px;color:var(--dark)" data-key="s3_r_desc">
-          <b>Bias = Unfair treatment</b> because AI learned from bad or one-sided data.
-        </p>
-        <div class="scale-container">
-          <div class="scale-graphic heartbeat-effect glow-effect interactive-element">⚖️</div>
-          <span style="font-size:12px; font-weight:800; color:var(--orange);" data-key="scale_txt">Fair AI treats everyone equally!</span>
+    <!-- TECHNIQUES -->
+    <section id="techniques">
+        <span class="section-label"><i class="fas fa-magic"></i> Smart Tricks</span>
+        <h2 class="section-title">How AI Makes Guesses</h2>
+        <p class="section-sub">AI learns from examples and then predicts new things. Try each one below!</p>
+        <div class="card-grid">
+            <a href="#regression" style="text-decoration:none;color:inherit;">
+                <div class="card">
+                    <div class="icon-wrap" style="background:#00BFB3;"><i class="fas fa-chart-simple"></i></div>
+                    <h3>📈 Regression</h3>
+                    <p>Predicts a number (like tomorrow's temperature).</p>
+                    <span class="tag" style="background:#00BFB320;color:#00BFB3;">Try the playground ↓</span>
+                </div>
+            </a>
+            <a href="#classify" style="text-decoration:none;color:inherit;">
+                <div class="card">
+                    <div class="icon-wrap" style="background:#7C5CFC;"><i class="fas fa-tags"></i></div>
+                    <h3>🏷️ Classification</h3>
+                    <p>Puts things into groups (like "fruit" or "vegetable").</p>
+                    <span class="tag" style="background:#7C5CFC20;color:#7C5CFC;">Play the sort game ↓</span>
+                </div>
+            </a>
+            <a href="#cluster" style="text-decoration:none;color:inherit;">
+                <div class="card">
+                    <div class="icon-wrap" style="background:#FFAE00;"><i class="fas fa-object-group"></i></div>
+                    <h3>🧩 Clustering</h3>
+                    <p>Groups similar things together, even without names for them.</p>
+                    <span class="tag" style="background:#FFAE0020;color:#B87A00;">Play the cluster game ↓</span>
+                </div>
+            </a>
         </div>
-        <div class="bias-flow">
-          <div class="flow-box" style="background:var(--orange);">
-            📊 &nbsp;<b data-key="f1_t">Unfair Data Goes In</b><br><span style="font-size:11px;font-weight:600;opacity:.9" data-key="f1_d">e.g. Only photos from one region</span>
-          </div>
-          <div class="flow-arrow">⬇️</div>
-          <div class="flow-box" style="background:var(--pink);">
-            🤖 &nbsp;<b data-key="f2_t">AI Learns Wrong Patterns</b><br><span style="font-size:11px;font-weight:600;opacity:.9" data-key="f2_d">Doesn't recognise diverse faces</span>
-          </div>
-          <div class="flow-arrow">⬇️</div>
-          <div class="fix-box" data-key="f_fix">
-            ✅ <b>The Fix:</b> Use diverse, fair data + Human review!
-          </div>
+        <div style="background:#1B1F4B;border-radius:1.2rem;padding:1rem 1.5rem;color:#fff;display:flex;flex-wrap:wrap;gap:0.6rem;justify-content:space-around;margin-top:1.5rem;font-weight:600;">
+            <span><span style="background:#7C5CFC;padding:0.2rem 0.8rem;border-radius:20px;margin-right:8px;">1</span> Learn from data</span>
+            <span><span style="background:#00BFB3;padding:0.2rem 0.8rem;border-radius:20px;margin-right:8px;">2</span> Find patterns</span>
+            <span><span style="background:#FFAE00;padding:0.2rem 0.8rem;border-radius:20px;margin-right:8px;color:#1B1F4B;">3</span> Predict or group</span>
         </div>
-      </div>
+    </section>
+
+    <!-- REGRESSION PLAYGROUND -->
+    <section id="regression">
+        <span class="section-label"><i class="fas fa-chart-simple"></i> Play with Regression</span>
+        <h2 class="section-title">📈 Draw Dots, AI Draws a Line!</h2>
+        <p class="section-sub">Click anywhere on the board to drop a dot. When you have a few dots, tap <b>"Find the Pattern"</b> and watch the AI draw a line through them – that's regression!</p>
+        <div class="demo-box">
+            <div class="reg-wrap">
+                <div class="reg-canvas-holder">
+                    <canvas id="regCanvas" height="340"></canvas>
+                </div>
+                <div class="reg-side">
+                    <p><i class="fas fa-lightbulb" style="color:#FFAE00;"></i> Each dot is one example, like "3 hours of study → 60 marks". The AI looks at all your dots and finds the straight line that fits them best.</p>
+                    <div class="reg-stat">Dots placed: <span id="regCount">0</span></div>
+                    <div class="reg-stat">Line found: <span id="regLineStatus">Not yet</span></div>
+                    <div class="reg-stat">Pattern strength: <span id="regStars" class="reg-stars">☆☆☆☆☆</span></div>
+                    <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:1rem;">
+                        <button class="btn btn-teal" id="regFitBtn"><i class="fas fa-wand-magic-sparkles"></i> Find the Pattern</button>
+                        <button class="btn btn-amber" id="regRandomBtn"><i class="fas fa-dice"></i> Add Random Dots</button>
+                        <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;" id="regClearBtn"><i class="fas fa-eraser"></i> Clear Board</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLASSIFICATION SORT GAME -->
+    <section id="classify">
+        <span class="section-label"><i class="fas fa-tags"></i> Play with Classification</span>
+        <h2 class="section-title">🏷️ Sort it Out!</h2>
+        <p class="section-sub">Drag (or tap, then tap a basket) each picture into the correct basket. AI does this exact job to sort spam emails, photos, and more!</p>
+        <div class="demo-box">
+            <div class="sort-wrap">
+                <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem;">
+                        <span class="sort-status" id="sortStatus">Sort all 8 items!</span>
+                        <span class="score-badge" id="sortScore">⭐ 0</span>
+                    </div>
+                    <div class="sort-tray" id="sortTray"></div>
+                </div>
+                <div class="sort-buckets">
+                    <div class="sort-bucket bucket-a">
+                        <h4 id="bucketATitle">🍎 Fruit</h4>
+                        <div class="items" id="bucketAItems"></div>
+                    </div>
+                    <div class="sort-bucket bucket-b">
+                        <h4 id="bucketBTitle">🥕 Vegetable</h4>
+                        <div class="items" id="bucketBItems"></div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                    <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.4rem 1.2rem;" id="sortResetBtn"><i class="fas fa-redo"></i> New Round</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CLUSTERING GAME -->
+    <section id="cluster">
+        <span class="section-label"><i class="fas fa-object-group"></i> Play with Clustering</span>
+        <h2 class="section-title">🧩 Group the Buddies!</h2>
+        <p class="section-sub">These little friends are scattered with no labels. Tap same-looking ones, then press <b>"Group Them"</b> to cluster them together – that's how AI groups similar things all by itself!</p>
+        <div class="demo-box">
+            <div class="cluster-field" id="clusterField"></div>
+            <div class="cluster-controls">
+                <span class="sort-status" id="clusterStatus">Pick items that look alike, then group them.</span>
+                <div style="display:flex;gap:0.6rem;flex-wrap:wrap;">
+                    <button class="btn btn-teal" id="clusterGroupBtn"><i class="fas fa-object-group"></i> Group Them</button>
+                    <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;" id="clusterResetBtn"><i class="fas fa-redo"></i> New Board</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="quiz">
+        <span class="section-label"><i class="fas fa-pencil-alt"></i> Fun Quiz</span>
+        <h2 class="section-title">Test Your AI Knowledge!</h2>
+        <p class="section-sub">Answer these easy questions – no stress, just for fun!</p>
+        <div class="quiz-container" id="quizContainer">
+            <div class="quiz-progress">
+                <span id="qCounter">Q1 / 5</span>
+                <div class="bar"><div class="fill" id="qFill" style="width:20%;"></div></div>
+                <span class="score-badge" id="qScore">⭐ 0</span>
+            </div>
+            <div id="qText" class="question-text"><i class="fas fa-question-circle" style="color:#7C5CFC;"></i> Loading…</div>
+            <div class="options" id="qOptions"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;">
+                <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.4rem 1.2rem;" id="qReset"><i class="fas fa-undo"></i> Reset</button>
+                <button class="btn btn-teal" id="qNext"><i class="fas fa-arrow-right"></i> Next</button>
+            </div>
+            <div id="qResult" class="result-box hidden">
+                <div style="font-size:3rem;">🎉</div>
+                <div class="big-score" id="finalScore">0 <span>/ 5</span></div>
+                <p style="font-weight:600;margin:0.5rem 0;" id="finalMsg">Great job!</p>
+                <button class="btn btn-amber" onclick="resetQuiz()"><i class="fas fa-redo"></i> Play Again</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MATCHING GAME -->
+    <section id="game">
+        <span class="section-label"><i class="fas fa-gamepad"></i> Match Game</span>
+        <h2 class="section-title">Match the Task to the AI Superpower</h2>
+        <p class="section-sub">Click a task on the left, then click the domain that does it!</p>
+        <div class="match-grid" id="matchGrid">
+            <div class="match-col">
+                <h4>📌 Task</h4>
+                <div id="matchLeft"></div>
+            </div>
+            <div class="match-col">
+                <h4>🧠 AI Domain</h4>
+                <div id="matchRight"></div>
+            </div>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:0.6rem;">
+            <span id="matchStatus" style="font-weight:600;color:#5B6178;">Match them all!</span>
+            <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.3rem 1.2rem;" onclick="initMatchGame()"><i class="fas fa-redo"></i> New Game</button>
+        </div>
+        <div id="matchWin" class="hidden" style="margin-top:0.8rem;background:#e0f7f5;padding:0.8rem 1.2rem;border-radius:1rem;font-weight:700;color:#00BFB3;">
+            🏆 You matched everything! You're a genius!
+        </div>
+    </section>
+
+    <!-- EXAM -->
+    <section id="exam">
+        <span class="section-label"><i class="fas fa-clock"></i> Timed Challenge</span>
+        <h2 class="section-title">Quick Exam</h2>
+        <p class="section-sub">You have 60 seconds – try to answer all 5 questions!</p>
+        <div class="exam-container" id="examContainer">
+            <div class="exam-timer">
+                <i class="fas fa-hourglass-half"></i>
+                <span class="time" id="examTimer">60</span>
+                <span style="font-weight:400;font-size:0.9rem;color:#5B6178;">seconds</span>
+                <span style="margin-left:auto;" class="score-badge" id="examScore">⭐ 0</span>
+            </div>
+            <div id="examQText" class="question-text"><i class="fas fa-bolt" style="color:#FFAE00;"></i> Loading…</div>
+            <div class="options" id="examOptions"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.2rem;">
+                <span id="examProgress" style="font-weight:600;color:#5B6178;">1 / 5</span>
+                <button class="btn btn-teal" id="examNext"><i class="fas fa-arrow-right"></i> Next</button>
+            </div>
+            <div id="examResult" class="result-box hidden">
+                <div style="font-size:3rem;">⏰</div>
+                <div class="big-score" id="examFinalScore">0 <span>/ 5</span></div>
+                <p style="font-weight:600;margin:0.5rem 0;" id="examFinalMsg">Time's up!</p>
+                <button class="btn btn-amber" onclick="resetExam()"><i class="fas fa-redo"></i> Retry</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRICE PREDICTOR -->
+    <section id="predictor">
+        <span class="section-label"><i class="fas fa-chart-line"></i> Data Science in Action</span>
+        <h2 class="section-title">🏠 House Price Predictor</h2>
+        <p class="section-sub">Move the slider – AI will predict the price of a house based on its size, and show it live on the chart!</p>
+        <div class="demo-box">
+            <div class="reg-wrap">
+                <div style="flex:1 1 380px;">
+                    <div class="demo-title"><i class="fas fa-ruler-combined" style="color:#7C5CFC;"></i> Square Feet:</div>
+                    <input type="range" id="areaSlider" min="500" max="5000" step="100" value="1500" style="width:80%;" />
+                    <span id="areaValue" style="font-weight:700;font-size:1.2rem;">1500</span> sq ft
+                    <div style="margin:0.5rem 0;">
+                        <label>Or type a number: <input type="number" id="areaInput" value="1500" min="500" max="5000" step="100" /></label>
+                    </div>
+                    <div class="prediction-result">💰 Predicted Price: <span id="priceResult">₹ 7,500,000</span></div>
+                    <div style="font-size:2.4rem;" id="houseEmoji">🏠</div>
+                    <p style="color:#5B6178;font-size:0.9rem;"><i class="fas fa-info-circle"></i> Formula: Price = ₹5000 × sqft + ₹100,000</p>
+                    <div style="background:#f5f6fe;padding:0.5rem;border-radius:12px;margin-top:0.5rem;">
+                        <span id="predictionExplanation">This is a simple regression example – the AI learns the relationship between size and price.</span>
+                    </div>
+                </div>
+                <div style="flex:0 0 320px;">
+                    <canvas id="priceChart" height="260"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VOICE ASSISTANT -->
+    <section id="voice">
+        <span class="section-label"><i class="fas fa-microphone"></i> NLP – Voice Assistant</span>
+        <h2 class="section-title">🗣️ Talk to AI</h2>
+        <p class="section-sub">Click the button to speak, and AI will convert your words to text. Or type something and hear it speak!</p>
+        <div class="demo-box">
+            <div class="demo-title"><i class="fas fa-ear-listen" style="color:#FFAE00;"></i> Speech Recognition</div>
+            <button id="voiceBtn" class="voice-btn"><i class="fas fa-microphone"></i> Click to Speak</button>
+            <div id="recordingStatus" style="margin:0.5rem 0;color:#5B6178;">Press the button and say something.</div>
+            <div class="transcript-box" id="transcriptDisplay">Your words will appear here…</div>
+            <hr style="margin:1rem 0;border-color:#e3e5f5;" />
+            <div class="demo-title"><i class="fas fa-volume-up" style="color:#00BFB3;"></i> Text-to-Speech</div>
+            <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;">
+                <input type="text" id="ttsInput" value="Hello, I am an AI assistant!" style="flex:1;padding:0.5rem 1rem;border-radius:30px;border:2px solid #dde0f0;font-size:1rem;" />
+                <button id="ttsBtn" class="voice-btn" style="background:#7C5CFC;"><i class="fas fa-play"></i> Speak</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ODIA WORD SPEAKER — FIXED! -->
+    <section id="odia">
+        <span class="section-label"><i class="fas fa-language"></i> NLP – Odia Words</span>
+        <h2 class="section-title">🇮🇳 Learn Odia Names!</h2>
+        <p class="section-sub">Type an English word (or tap a picture below) and AI will show and <b>speak</b> its Odia name out loud!</p>
+        <div class="demo-box odia-card">
+            <div class="demo-title"><i class="fas fa-keyboard" style="color:#7C5CFC;"></i> Type a word</div>
+            <div style="display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;">
+                <input type="text" id="odiaInput" placeholder="e.g. apple, dog, red, three…" style="flex:1;min-width:200px;padding:0.6rem 1rem;border-radius:30px;border:2px solid #dde0f0;font-size:1rem;" />
+                <button id="odiaSpeakBtn" class="voice-btn" style="background:#FFAE00;color:#1B1F4B;"><i class="fas fa-volume-up"></i> ଶୁଣନ୍ତୁ (Speak)</button>
+            </div>
+            <div class="odia-status" id="odiaStatus">🔊 Tap a word below or type one, then press Speak.</div>
+            <div class="odia-result hidden" id="odiaResultBox">
+                <div style="font-size:1rem;color:#cfd3f2;" id="odiaEnglishWord">apple</div>
+                <div class="odia-script" id="odiaScriptWord">ଆପେଲ</div>
+                <div class="odia-roman" id="odiaRomanWord">(aa-pel)</div>
+            </div>
+            <p style="margin-top:1rem;font-weight:700;color:#5B6178;">Or tap a picture:</p>
+            <div class="odia-word-grid" id="odiaWordGrid"></div>
+            <p style="font-size:0.8rem;color:#5B6178;margin-top:0.6rem;"><i class="fas fa-info-circle"></i> If your device doesn't have an Odia voice, we'll use the closest available voice (Hindi or English) — the Odia text will still show!</p>
+        </div>
+    </section>
+
+    <!-- SNAP & GUESS (OBJECT IDENTIFICATION) -->
+    <section id="snap">
+        <span class="section-label"><i class="fas fa-camera-retro"></i> Computer Vision – Object ID</span>
+        <h2 class="section-title">📸 Snap It & AI Guesses It!</h2>
+        <p class="section-sub">Turn on your camera, point it at something – a person, a phone, a pen, a notebook, anything! – then tap <b>"Snap Photo"</b> and AI will tell you what it sees.</p>
+        <div class="demo-box">
+            <div class="snap-preview-wrap">
+                <video id="snapVideo" autoplay playsinline muted style="max-width:480px;"></video>
+                <canvas id="snapCanvas" class="hidden" style="max-width:480px;"></canvas>
+            </div>
+            <div style="margin-top:0.8rem;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;">
+                <button id="snapStartBtn" class="btn btn-teal"><i class="fas fa-video"></i> Start Camera</button>
+                <button id="snapShotBtn" class="btn btn-amber" disabled><i class="fas fa-camera"></i> Snap Photo</button>
+                <button id="snapRetryBtn" class="btn btn-outline hidden" style="border-color:#dde0f0;color:#5B6178;"><i class="fas fa-redo"></i> Try Again</button>
+                <span id="snapStatus" style="font-weight:600;color:#5B6178;">Camera off. Loading AI model…</span>
+            </div>
+            <div class="snap-tags" id="snapTags"></div>
+        </div>
+    </section>
+
+    <!-- DRAW & GUESS -->
+    <section id="draw">
+        <span class="section-label"><i class="fas fa-pencil-ruler"></i> Computer Vision – Doodle AI</span>
+        <h2 class="section-title">✏️ Draw It & AI Guesses It!</h2>
+        <p class="section-sub">Doodle anything – a cat, a house, a star, a tree – then tap <b>"What did I draw?"</b> and AI will try to guess your drawing!</p>
+        <div class="demo-box">
+            <div class="draw-wrap">
+                <div>
+                    <canvas id="drawCanvas" width="420" height="340"></canvas>
+                    <div class="color-swatches" id="colorSwatches"></div>
+                    <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.6rem;">
+                        <button class="btn btn-teal" id="drawGuessBtn"><i class="fas fa-magic-wand-sparkles"></i> What did I draw?</button>
+                        <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;" id="drawClearBtn"><i class="fas fa-eraser"></i> Clear</button>
+                    </div>
+                </div>
+                <div class="draw-side">
+                    <p style="color:#5B6178;font-size:0.9rem;line-height:1.5;"><i class="fas fa-lightbulb" style="color:#FFAE00;"></i> AI has seen millions of doodles before, so it can guess simple drawings — but it might get silly sometimes, and that's OK! Real AI makes mistakes too.</p>
+                    <div class="draw-guess-result hidden" id="drawGuessResult">
+                        <div style="font-weight:800;margin-bottom:0.5rem;">🤖 AI thinks it's…</div>
+                        <div id="drawGuessList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FACE DETECTOR -->
+    <section id="face">
+        <span class="section-label"><i class="fas fa-camera"></i> Computer Vision – Face Detection</span>
+        <h2 class="section-title">📷 Find Faces with AI</h2>
+        <p class="section-sub">Allow camera access, and AI will draw boxes around faces it detects!</p>
+        <div class="demo-box">
+            <div style="position:relative;display:inline-block;width:100%;">
+                <video id="videoFeed" autoplay playsinline class="video-feed" style="width:100%;max-width:640px;"></video>
+                <canvas id="faceCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+            </div>
+            <div style="margin-top:0.8rem;">
+                <button id="faceStartBtn" class="btn btn-teal"><i class="fas fa-play"></i> Start Camera</button>
+                <button id="faceStopBtn" class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;"><i class="fas fa-stop"></i> Stop</button>
+                <span id="faceStatus" style="margin-left:1rem;font-weight:600;color:#5B6178;">Camera off</span>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.9rem;color:#5B6178;">
+                <i class="fas fa-info-circle"></i> Works best in Chrome/Edge. If no face, move around!
+            </div>
+        </div>
+    </section>
+
+    <!-- VIDEOS -->
+    <section id="videos">
+        <span class="section-label"><i class="fas fa-video"></i> Watch & Learn</span>
+        <h2 class="section-title">See AI in Action!</h2>
+        <p class="section-sub">Short videos that show how AI works – click the play button!</p>
+        <div class="video-grid">
+            <div class="video-card">
+                <div class="thumbnail" style="background:#7C5CFC;"><i class="fas fa-play-circle"></i></div>
+                <h4>🧮 Data Science</h4>
+                <a href="https://www.youtube.com/watch?v=X3paOmcrTjQ" target="_blank">Watch Example →</a>
+            </div>
+            <div class="video-card">
+                <div class="thumbnail" style="background:#00BFB3;"><i class="fas fa-play-circle"></i></div>
+                <h4>📷 Computer Vision</h4>
+                <a href="https://www.youtube.com/watch?v=-Ua3DZkFBRU" target="_blank">Watch Example →</a>
+            </div>
+            <div class="video-card">
+                <div class="thumbnail" style="background:#FFAE00;"><i class="fas fa-play-circle"></i></div>
+                <h4>🗣️ NLP</h4>
+                <a href="https://www.youtube.com/watch?v=2c7UUNqojj4" target="_blank">Watch Example →</a>
+            </div>
+        </div>
+        <p style="text-align:center;color:#5B6178;font-size:0.9rem;">(These are short YouTube clips – ask a grown-up to help you watch!)</p>
+    </section>
+
+    <!-- CHARTS -->
+    <section id="charts">
+        <span class="section-label"><i class="fas fa-chart-pie"></i> AI in Numbers</span>
+        <h2 class="section-title">How AI is Used</h2>
+        <p class="section-sub">See which AI superpower is used the most! Click the buttons to change what the chart shows.</p>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.35rem 1rem;" data-domain-view="doughnut">🍩 Doughnut</button>
+            <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.35rem 1rem;" data-domain-view="pie">🥧 Pie</button>
+            <button class="btn btn-outline" style="border-color:#dde0f0;color:#5B6178;padding:0.35rem 1rem;" data-domain-view="bar">📊 Bar</button>
+        </div>
+        <div class="chart-grid">
+            <div class="chart-box">
+                <h4>Domain Popularity (click the buttons above!)</h4>
+                <canvas id="chartDomain" height="180"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4>Techniques Used</h4>
+                <canvas id="chartTechnique" height="180"></canvas>
+            </div>
+            <div class="chart-box">
+                <h4>AI Growth Over Years</h4>
+                <canvas id="chartGrowth" height="180"></canvas>
+            </div>
+        </div>
+        <div class="funfact-box">
+            <div class="icon">🤯</div>
+            <div class="funfact-text" id="funFactText">Tap the button for a fun AI fact!</div>
+            <button class="btn btn-amber" id="funFactBtn"><i class="fas fa-sparkles"></i> New Fun Fact</button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <p><i class="fas fa-robot"></i> AI for Kids · Class 3 · Learn with fun!</p>
+        <p style="font-size:0.7rem;margin-top:0.2rem;">Made with <i class="fas fa-heart" style="color:#ff6b6b;"></i> for young explorers</p>
     </div>
-  </div>
 
-  <div class="slide" id="s4">
-    <div class="slide-header" style="background:var(--orange)">
-      <span class="icon">⚠️</span>
-      <h2 data-key="s4_title">Misinformation & Accountability</h2>
-    </div>
-    <div class="s4-body">
-      <div class="s4-left">
-        <div class="col-title" style="color:var(--orange)" data-key="s4_l_title">📢 Fake News & Media</div>
-        
-        <div class="media-showcase">
-          <div class="media-card fake">
-            <div class="media-title" data-key="m1_h">🚨 Fake News</div>
-            <span data-key="m1_b">"School Closed Tomorrow!"</span>
-          </div>
-          <div class="media-card fake">
-            <div class="media-title" data-key="m2_h">🎭 Deepfake</div>
-            <span data-key="m2_b">Fake Video/Voice Mimic</span>
-          </div>
-        </div>
+    <div id="toast"></div>
+    <div id="mascotBubble"></div>
+    <div id="mascot" title="Tap me for a hint!">🤖</div>
 
-        <div class="chain-item" style="background:var(--pink);">
-          <div class="num">1</div> <span data-key="ch1">Fake message created by AI or a person</span>
-        </div>
-        <div class="chain-item" style="background:var(--orange);">
-          <div class="num">2</div> <span data-key="ch2">Shared rapidly on social media channels</span>
-        </div>
-        <div class="chain-item" style="background:#B71C1C;">
-          <div class="num">3</div> <span data-key="ch3">Panic, confusion & harm spreads around 😰</span>
-        </div>
+    <script>
+        // ======================================================================
+        //  GLOBAL STAR SYSTEM + TOAST + CONFETTI
+        // ======================================================================
+        let totalStars = 0;
 
-        <div class="col-title" style="color:var(--teal);margin-top:4px" data-key="s4_act_h">✅ What YOU Can Do</div>
-        <div class="check-list">
-          <div class="check-item"><span class="ck">🔍</span> <span data-key="li1">Check the source — who wrote it?</span></div>
-          <div class="check-item"><span class="ck">🤔</span> <span data-key="li2">Think critically before you share!</span></div>
-        </div>
-      </div>
+        function addStars(n) {
+            totalStars += n;
+            document.getElementById('totalStars').textContent = totalStars;
+        }
 
-      <div class="s4-right">
-        <div class="col-title" style="color:var(--purple)" data-key="s4_r_title">👤 Who is Responsible?</div>
-        <p style="font-weight:700;font-size:14px;color:var(--dark)" data-key="s4_r_desc">
-          When AI makes a mistake — <b>humans</b> must take responsibility. AI doesn't decide alone!
-        </p>
-        <div class="who-grid">
-          <div class="who-card" border-top:4px solid var(--teal)" onclick="burst(this,'💻')">
-            <div class="we">👨‍💻</div>
-            <div class="wt" data-key="w1_t">Developers</div>
-            <div class="wd" data-key="w1_d">Build AI responsibly</div>
-          </div>
-          <div class="who-card" onclick="burst(this,'🌟')">
-            <div class="we">🧑‍🎓</div>
-            <div class="wt" data-key="w2_t">YOU! (Users)</div>
-            <div class="wd" data-key="w2_d">Use AI wisely everyday</div>
-          </div>
-        </div>
-        <div class="tip-box" style="background:var(--purple); margin-top: 10px;" data-key="s4_eg">
-          🏥 <b>Real Example:</b> Doctors must always review AI diagnoses — the human is accountable, not the machine!
-        </div>
-      </div>
-    </div>
-  </div>
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(showToast._timer);
+            showToast._timer = setTimeout(() => t.classList.remove('show'), 1800);
+        }
 
-  <div class="slide" id="s5">
-    <div class="quiz-header">
-      <h2 data-key="s5_title">🎉 Quiz Time! Let's Play!</h2>
-      <p data-key="s5_sub">Tap each card to reveal the answer — shout it out first! 🏆</p>
-    </div>
-    <div class="quiz-grid">
-      <div class="qcard" onclick="revealQ(this)">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div class="qnum">Q1</div>
-          <div class="question" data-key="q1_q">What do we call unfair AI outcomes caused by one-sided or incomplete data?</div>
-        </div>
-        <div class="answer" data-key="q1_a">🎯 Answer: BIAS! — AI learns wrong patterns from bad data.</div>
-      </div>
-      <div class="qcard" onclick="revealQ(this)">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div class="qnum">Q2</div>
-          <div class="question" data-key="q2_q">Name types of personal data you should NEVER share online. Why?</div>
-        </div>
-        <div class="answer" data-key="q2_a">🎯 Passwords & Bank details — sharing leads to fraud!</div>
-      </div>
-      <div class="qcard" onclick="revealQ(this)">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div class="qnum">Q3</div>
-          <div class="question" data-key="q3_q">An AI system makes a wrong medical diagnosis. Who is responsible?</div>
-        </div>
-        <div class="answer" data-key="q3_a">🎯 The Doctors & Hospital! Humans are always accountable.</div>
-      </div>
-      <div class="qcard" onclick="revealQ(this)">
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div class="qnum">Q4</div>
-          <div class="question" data-key="q4_q">Your friend sends you a scary unverified news alert message. What do you do?</div>
-        </div>
-        <div class="answer" data-key="q4_a">🎯 Check the source, verify facts, and don't forward blindly!</div>
-      </div>
-    </div>
-    <p class="tap-hint" data-key="tap_hint">👆 Tap each card to reveal its answer</p>
-    <div class="summary-bar" data-key="sum_bar">
-      🌟 Remember: Fair • Safe • Transparent • Accountable — That's Responsible AI!
-    </div>
-  </div>
+        function launchConfetti(count = 40) {
+            const colors = ['#7C5CFC', '#00BFB3', '#FFAE00', '#ff6b6b'];
+            for (let i = 0; i < count; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+                piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                document.body.appendChild(piece);
+                setTimeout(() => piece.remove(), 3800);
+            }
+        }
 
-</div>
+        function playBeep(correct) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ctxA = new AudioCtx();
+                const osc = ctxA.createOscillator();
+                const gain = ctxA.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = correct ? 880 : 220;
+                gain.gain.value = 0.08;
+                osc.connect(gain);
+                gain.connect(ctxA.destination);
+                osc.start();
+                osc.stop(ctxA.currentTime + 0.18);
+                osc.onended = () => ctxA.close();
+            } catch (e) { /* audio not available, ignore */ }
+        }
 
-<div id="nav">
-  <button onclick="go(-1)" title="Previous">◀</button>
-  <div id="dots"></div>
-  <button onclick="go(1)" title="Next">▶</button>
-  
-  <div id="lang-switch">
-    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" id="btn-or" onclick="setLang('or')">ଓଡ଼ିଆ</button>
-  </div>
-</div>
+        // ======================================================================
+        //  MASCOT
+        // ======================================================================
+        const mascotMsgs = [
+            "You're doing great! 🌟",
+            "AI learns from examples, just like you learn from practice!",
+            "Try the Draw & Guess game — it's my favourite! ✏️",
+            "Did you know? AI can't think — it just finds patterns!",
+            "Keep collecting stars ⭐ — you're a super learner!",
+            "Computers learn to see using LOTS of pictures 📷",
+            "Odia has its own beautiful script — try the Odia section! 🇮🇳"
+        ];
+        const mascotEl = document.getElementById('mascot');
+        const mascotBubble = document.getElementById('mascotBubble');
 
-<script>
-/* ── TRANSLATION MAPS ── */
-const langData = {
-  en: {
-    s1_title: "AI Ethics &<br>Responsible AI",
-    s1_sub: "A Fun Journey for Curious Minds! 🚀",
-    s1_pill: "For Students of Class 3 to 8",
-    chip1: "🤖 What is AI Ethics?", chip2: "🔒 Privacy", chip3: "⚖️ Bias & Fairness", chip4: "📢 Misinformation", chip5: "👤 Accountability",
-    s2_title: "What is AI Ethics?",
-    s2_banner: "💬 &nbsp;\"Ethics asks: What SHOULD technology do — not just what CAN it do?\"",
-    p1_l: "FAIR", p1_d: "Treats every person equally, no exceptions!",
-    p2_l: "SAFE", p2_d: "Protects people from harm & danger",
-    p3_l: "TRANSPARENT", p3_d: "Honest & open about how it works",
-    p4_l: "HELPFUL", p4_d: "Benefits everyone in society — you too!",
-    s2_act: "🎯 <b>THINK & SHARE:</b> If a robot delivers food faster to rich areas but ignores poor areas — is it ethical? Why?",
-    s3_title: "Privacy & Bias in AI",
-    s3_l_title: "🔒 Privacy",
-    s3_l_desc: "Privacy = <b>YOUR control</b> over your personal info.<br>Tap any item to see if it's RISKY to share!",
-    c_loc: "Location", c_pho: "Photos", c_pas: "Passwords", c_bnk: "Bank Details", c_cnt: "Contacts", c_hth: "Health Info",
-    risk_hint: "👆 Tap a card above to learn about it!",
-    s3_act1: "🎯 <b>ACTIVITY:</b> Would you share your location with a game app? Discuss!",
-    s3_r_title: "⚖️ Bias in AI",
-    s3_r_desc: "<b>Bias = Unfair treatment</b> because AI learned from bad or one-sided data.",
-    scale_txt: "Fair AI treats everyone equally!",
-    f1_t: "Unfair Data Goes In", f1_d: "e.g. Only photos from one region",
-    f2_t: "AI Learns Wrong Patterns", f2_d: "Doesn't recognise diverse faces",
-    f_fix: "✅ <b>The Fix:</b> Use diverse, fair data + Human review!",
-    s4_title: "Misinformation & Accountability",
-    s4_l_title: "📢 Fake News & Media",
-    m1_h: "🚨 Fake News", m1_b: "\"School Closed Tomorrow!\"",
-    m2_h: "🎭 Deepfake", m2_b: "Fake Video/Voice Mimic",
-    ch1: "Fake message created by AI or a person",
-    ch2: "Shared rapidly on social media channels",
-    ch3: "Panic, confusion & harm spreads around 😰",
-    s4_act_h: "✅ What YOU Can Do",
-    li1: "Check the source — who wrote it?",
-    li2: "Think critically before you share!",
-    s4_r_title: "👤 Who is Responsible?",
-    s4_r_desc: "When AI makes a mistake — <b>humans</b> must take responsibility. AI doesn't decide alone!",
-    w1_t: "Developers", w1_d: "Build AI responsibly",
-    w2_t: "YOU! (Users)", w2_d: "Use AI wisely everyday",
-    s4_eg: "🏥 <b>Real Example:</b> Doctors must always review AI diagnoses — the human is accountable, not the machine!",
-    s5_title: "🎉 Quiz Time! Let's Play!",
-    s5_sub: "Tap each card to reveal the answer — shout it out first! 🏆",
-    q1_q: "What do we call unfair AI outcomes caused by one-sided or incomplete data?",
-    q1_a: "🎯 Answer: BIAS! — AI learns wrong patterns from bad data.",
-    q2_q: "Name types of personal data you should NEVER share online. Why?",
-    q2_a: "🎯 Passwords & Bank details — sharing leads to fraud!",
-    q3_q: "An AI system makes a wrong medical diagnosis. Who is responsible?",
-    q3_a: "🎯 The Doctors & Hospital! Humans are always accountable.",
-    q4_q: "Your friend sends you a scary unverified news alert message. What do you do?",
-    q4_a: "🎯 Check the source, verify facts, and don't forward blindly!",
-    tap_hint: "👆 Tap each card to reveal its answer",
-    sum_bar: "🌟 Remember: Fair • Safe • Transparent • Accountable — That's Responsible AI!"
-  },
-  or: {
-    s1_title: "ଏଆଇ ନୀତିଶାସ୍ତ୍ର ଏବଂ<br>ଦାୟିତ୍ୱବାନ ଏଆଇ (AI)",
-    s1_sub: "କୁତୂହଳୀ ମନ ପାଇଁ ଏକ ମଜାଦାର ଯାତ୍ରା! 🚀",
-    s1_pill: "ତୃତୀୟ ରୁ ଅଷ୍ଟମ ଶ୍ରେଣୀର ଛାତ୍ରଛାତ୍ରୀଙ୍କ ପାଇଁ",
-    chip1: "🤖 ଏଆଇ ନୀତିଶାସ୍ତ୍ର କଣ?", chip2: "🔒 ଗୋପନୀୟତା", chip3: "⚖️ ପାତରଅନ୍ତର ଏବଂ ନ୍ୟାୟ", chip4: "📢 ଭ୍ରମାତ୍ମକ ସୂଚନା", chip5: "👤 ଦାୟିତ୍ୱବୋଧ",
-    s2_title: "ଏଆଇ ନୀତିଶାସ୍ତ୍ର କଣ?",
-    s2_banner: "💬 &nbsp;\"ନୀତିଶାସ୍ତ୍ର ପଚାରେ: ପ୍ରଯୁକ୍ତିବିଦ୍ୟା କଣ କରିବା ଉଚିତ — କେବଳ ଏହା କଣ କରିପାରିବ ତାହା ନୁହେଁ!\"",
-    p1_l: "ନ୍ୟାୟପୂର୍ଣ୍ଣ", p1_d: "ପ୍ରତ୍ୟେକ ବ୍ୟକ୍ତିଙ୍କୁ ସମାନ ଭାବେ ଦେଖେ, କୌଣସି ପାତରଅନ୍ତର ନାହିଁ!",
-    p2_l: "ସୁରକ୍ଷିତ", p2_d: "ଲୋକମାନଙ୍କୁ କ୍ଷତି ଏବଂ ବିପଦରୁ ରକ୍ଷା କରେ",
-    p3_l: "ସ୍ୱଚ୍ଛତା", p3_d: "ଏହା କିପରି କାମ କରେ ସେ ବିଷୟରେ ସ୍ପଷ୍ଟ ଏବଂ ସଚ୍ଚୋଟ ରହେ",
-    p4_l: "ସହାୟକ", p4_d: "ସମାଜର ସମସ୍ତଙ୍କ ପାଇଁ ଲାଭଦାୟକ — ଆପଣଙ୍କ ପାଇଁ ମଧ୍ୟ!",
-    s2_act: "🎯 <b>ଚିନ୍ତା କରନ୍ତୁ ଏବଂ କୁହନ୍ତୁ:</b> ଯଦି ଏକ ରୋବୋଟ୍ ଧନୀ ଅଞ୍ଚଳକୁ ଶୀଘ୍ର ଖାଦ୍ୟ ଦିଏ କିନ୍ତୁ ଗରିବ ଅଞ୍ଚଳକୁ ଅଣଦେଖା କରେ — ତେବେ ଏହା କଣ ନୀତିସଙ୍ଗତ? କାହିଁକି?",
-    s3_title: "ଏଆଇ ମଧ୍ୟରେ ଗୋପନୀୟତା ଏବଂ ପାତରଅନ୍ତର",
-    s3_l_title: "🔒 ଗୋପନୀୟତା",
-    s3_l_desc: "ଗୋପନୀୟତା = ନିଜର ବ୍ୟକ୍ତିଗତ ସୂଚନା ଉପରେ <b>ଆପଣଙ୍କର ନିୟନ୍ତ୍ରଣ</b>।<br>ଜାଣିବା ପାଇଁ ଯେକୌଣସି କାର୍ଡ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ!",
-    c_loc: "ସ୍ଥାନ (Location)", c_pho: "ଫଟୋଗ୍ରାଫ୍", c_pas: "ପାସୱାର୍ଡ", c_bnk: "ବ୍ୟାଙ୍କ ବିବରଣୀ", c_cnt: "ସମ୍ପର୍କ ନମ୍ବର", c_hth: "ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା",
-    risk_hint: "👆 ସୂଚନା ଜାଣିବା ପାଇଁ ଉପରୋକ୍ତ କାର୍ଡ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ!",
-    s3_act1: "🎯 <b>କାର୍ଯ୍ୟକଳାପ:</b> ଆପଣ ଏକ ଗେମ୍ ଆପ୍ ସହିତ ନିଜର ଲାଇଭ୍ ଲୋକେସନ ସେୟାର୍ କରିବେ କି? ଆଲୋଚନା କରନ୍ତୁ!",
-    s3_r_title: "⚖️ ଏଆଇ ରେ ପାତରଅନ୍ତର (Bias)",
-    s3_r_desc: "<b>Bias = ଅନ୍ୟାୟପୂର୍ଣ୍ଣ ବ୍ୟବହାର</b>, କାରଣ ଏଆଇ ଭୁଲ୍ କିମ୍ବା ଏକପାଖିଆ ଡାଟାରୁ ଶିଖିଥାଏ।",
-    scale_txt: "ସଠିକ୍ ଏଆଇ ସମସ୍ତଙ୍କୁ ସମାନ ଭାବେ ଗ୍ରହଣ କରେ!",
-    f1_t: "ଅସମ୍ପୂର୍ଣ୍ଣ ଡାଟା ପ୍ରବେଶ", f1_d: "ଉଦାହରଣ: କେବଳ ଗୋଟିଏ ଅଞ୍ଚଳର ଫଟୋ",
-    f2_t: "ଏଆଇ ଭୁଲ୍ ଶୈଳୀ ଶିଖେ", f2_d: "ବିଭିନ୍ନ ପ୍ରକାରର ଚେହେରା ଚିହ୍ନିପାରେ ନାହିଁ",
-    f_fix: "✅ <b>ସମାଧାନ:</b> ବିଭିନ୍ନ ପ୍ରକାରର ସଠିକ୍ ଡାଟା ଏବଂ ମଣିଷ ଦ୍ୱାରା ଯାଞ୍ଚ କରିବା ଆବଶ୍ୟକ!",
-    s4_title: "ଭ୍ରମାତ୍ମକ ସୂଚନା ଏବଂ ଦାୟିତ୍ୱବୋଧ",
-    s4_l_title: "📢 ମିଥ୍ୟା ଖବର ଏବଂ ମିଡିଆ",
-    m1_h: "🚨 ମିଥ୍ୟା ଖବର", m1_b: "\"ଆସନ୍ତାକାଲି ସ୍କୁଲ୍ ଛୁଟି!\"",
-    m2_h: "🎭 ଡିପ୍‌ଫେକ୍ (Deepfake)", m2_b: "ନକଲି ଭିଡିଓ କିମ୍ବା ସ୍ୱର ନକଲ",
-    ch1: "ଏଆଇ କିମ୍ବା ମଣିଷ ଦ୍ୱାରା ନକଲି ବାର୍ତ୍ତା ସୃଷ୍ଟି ହୁଏ",
-    ch2: "ସୋସିଆଲ ମିଡିଆ ମାଧ୍ୟମରେ ଏହା ଶୀଘ୍ର ବ୍ୟାପିଯାଏ",
-    ch3: "ସବୁଆଡେ ଆତଙ୍କ ଏବଂ ଭ୍ରମ ସୃଷ୍ଟି ହୁଏ 😰",
-    s4_act_h: "✅ ଆପଣ କଣ କରିପାରିବେ",
-    li1: "ଉତ୍ସ ଯାଞ୍ଚ କରନ୍ତୁ — ଏହାକୁ କିଏ ଲେଖିଛି?",
-    li2: "ସେୟାର୍ କରିବା ପୂର୍ବରୁ ଗମ୍ଭୀରତାର ସହ ଚିନ୍ତା କରନ୍ତୁ!",
-    s4_r_title: "👤 ଦାୟିତ୍ୱ କାହାର?",
-    s4_r_desc: "ଯେତେବେଳେ ଏଆଇ ଭୁଲ୍ କରେ — <b>ମଣିଷକୁ</b> ହିଁ ଦାୟିତ୍ୱ ନେବାକୁ ହେବ। ଏଆଇ ନିଜେ ନିଷ୍ପତ୍ତି ନିଏ ନାହିଁ!",
-    w1_t: "ଡେଭେଲପର୍ସ", w1_d: "ଦାୟିତ୍ୱର ସହ ଏଆଇ ନିର୍ମାଣ କରନ୍ତୁ",
-    w2_t: "ଆପଣ! (ବ୍ୟବହାରକାରୀ)", w2_d: "ପ୍ରତିଦିନ ବୁଦ୍ଧିମାନର ସହ ଏଆଇ ବ୍ୟବହାର କରନ୍ତୁ",
-    s4_eg: "🏥 <b>ବାସ୍ତବ ଉଦାହରଣ:</b> ଡାକ୍ତରମାନେ ସର୍ବଦା ଏଆଇ ରୋଗ ନିରୂପଣକୁ ଯାଞ୍ଚ କରିବା ଉଚିତ — ମେସିନ୍ ନୁହେଁ, ମଣିଷ ହିଁ ଦାୟୀ!",
-    s5_title: "🎉 କୁଇଜ୍ ସମୟ! ଚାଲନ୍ତୁ ଖେଳିବା!",
-    s5_sub: "ଉତ୍ତର ଦେଖିବା ପାଇଁ ପ୍ରତ୍ୟେକ କାର୍ଡ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ! 🏆",
-    q1_q: "ଏକପାଖିଆ କିମ୍ବା ଅସମ୍ପୂର୍ଣ୍ଣ ଡାଟା ହେତୁ ଏଆଇ ର ଭୁଲ୍ ନିଷ୍ପତ୍ତିକୁ କଣ କୁହାଯାଏ?",
-    q1_a: "🎯 ଉତ୍ତର: BIAS (ପାତରଅନ୍ତର)! — ଏଆଇ ଖରାପ ଡାଟାରୁ ଭୁଲ୍ ଜିନିଷ ଶିଖିଥାଏ।",
-    q2_q: "ଅନଲାଇନରେ କେଉଁ ବ୍ୟକ୍ତିଗତ ଡାଟା କଦାପି ସେୟାର୍ କରିବା ଉଚିତ ନୁହେଁ? କାହିଁକି?",
-    q2_a: "🎯 ପାସୱାର୍ଡ ଏବଂ ବ୍ୟାଙ୍କ ବିବରଣୀ — ଏହା ଦ୍ୱାରା ପ୍ରତାରଣା ହୋଇପାରେ!",
-    q3_q: "ଏକ ଏଆଇ ସିଷ୍ଟମ୍ ଭୁଲ୍ ଚିକିତ୍ସା ନିରୂପଣ କଲେ ଦାୟୀ କିଏ ହେବ?",
-    q3_a: "🎯 ଡାକ୍ତର ଏବଂ ମାଲିକ ହସ୍ପିଟାଲ୍! ମଣିଷ ହିଁ ସର୍ବଦା ଦାୟୀ ରହିବେ।",
-    q4_q: "ଆପଣଙ୍କ ସାଙ୍ଗ ଏକ ଭୟଭୀତ କଲାଭଳି ମିଥ୍ୟା ଖବର ପଠାଇଲେ ଆପଣ କଣ କରିବେ?",
-    q4_a: "🎯 ଉତ୍ତରର ସତ୍ୟତା ଯାଞ୍ଚ କରିବେ, ଏବଂ ବିନା ଯାଞ୍ଚରେ ଆଗକୁ ପଠାଇବେ ନାହିଁ!",
-    tap_hint: "👆 ଉତ୍ତର ଦେଖିବା ପାଇଁ କାର୍ଡ ଉପରେ କ୍ଲିକ୍ କରନ୍ତୁ",
-    sum_bar: "🌟 ମନେରଖନ୍ତୁ: ନ୍ୟାୟପୂର୍ଣ୍ଣ • ସୁରକ୍ଷିତ • ସ୍ୱଚ୍ଛତା • ଦାୟିତ୍ୱବୋଧ — ଏହା ହିଁ ପ୍ରକୃତ ଏଆଇ!"
-  }
-};
+        function mascotSay(msg) {
+            mascotBubble.textContent = msg;
+            mascotBubble.classList.add('show');
+            clearTimeout(mascotSay._t);
+            mascotSay._t = setTimeout(() => mascotBubble.classList.remove('show'), 3200);
+        }
+        mascotEl.addEventListener('click', () => {
+            mascotSay(mascotMsgs[Math.floor(Math.random() * mascotMsgs.length)]);
+            playBeep(true);
+        });
+        setTimeout(() => mascotSay("Hi! I'm Byte 🤖 — tap me anytime for a tip!"), 2000);
 
-const riskAlerts = {
-  en: {
-    loc: "🚨 Never share your live location with strangers!",
-    pho: "📸 Photos can reveal where you study and live!",
-    pas: "🔑 NEVER share passwords with anyone — ever!",
-    bnk: "💳 Bank details can lead to severe cyber fraud!",
-    cnt: "📞 Contacts include private family phone numbers!",
-    hth: "🏥 Health profile info is extremely private!"
-  },
-  or: {
-    loc: "🚨 ଅପରିଚିତ ବ୍ୟକ୍ତିଙ୍କ ସହ ନିଜର ଲାଇଭ୍ ଲୋକେସନ କଦାପି ସେୟାର୍ କରନ୍ତୁ ନାହିଁ!",
-    pho: "📸 ଫଟୋ ମାଧ୍ୟମରେ ଆପଣ କେଉଁଠି ରୁହନ୍ତି ତାହା ଜଣାପଡିଯାଇପାରେ!",
-    pas: "🔑 କାହା ସହିତ ନିଜର ପାସୱାର୍ଡ କଦାପି ସେୟାର୍ କରନ୍ତୁ ନାହିଁ!",
-    bnk: "💳 ବ୍ୟାଙ୍କ ସୂଚନା ଦ୍ୱାରା ବଡ଼ ଧରଣର ସାଇବର୍ ଠକେଇ ହୋଇପାରେ!",
-    cnt: "📞 କଣ୍ଟାକ୍ଟ ମଧ୍ୟରେ ପରିବାରର ବ୍ୟକ୍ତିଗତ ନମ୍ବର ଥାଏ!",
-    hth: "🏥 ସ୍ୱାସ୍ଥ୍ୟ ସମ୍ବନ୍ଧୀୟ ସୂଚନା ଅତ୍ୟନ୍ତ ଗୋପନୀୟ ଅଟେ!"
-  }
-};
+        // ======================================================================
+        //  FLOATING EMOJIS IN HERO
+        // ======================================================================
+        (function addFloatingEmojis() {
+            const hero = document.getElementById('home');
+            const emojis = ['🤖', '⭐', '🧠', '📷', '🗣️', '📈', '🧩'];
+            emojis.forEach((em, i) => {
+                const span = document.createElement('span');
+                span.className = 'floating-emoji';
+                span.textContent = em;
+                span.style.left = (8 + i * 13) + '%';
+                span.style.top = (10 + (i % 3) * 25) + '%';
+                span.style.animationDelay = (i * 0.6) + 's';
+                span.style.animationDuration = (5 + (i % 3)) + 's';
+                hero.appendChild(span);
+            });
+        })();
 
-let currentLang = 'en';
+        // ======================================================================
+        //  NAV ACTIVE
+        // ======================================================================
+        const navLinks = document.querySelectorAll('.nav-links a');
+        const sections = document.querySelectorAll('section');
+        window.addEventListener('scroll', () => {
+            let current = 'home';
+            sections.forEach(sec => {
+                const top = sec.offsetTop - 120;
+                if (window.scrollY >= top) current = sec.id;
+            });
+            navLinks.forEach(a => {
+                a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+            });
+        });
 
-function setLang(lang) {
-  currentLang = lang;
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(`btn-${lang}`).classList.add('active');
-  
-  // Update translation text strings dynamically
-  const elements = document.querySelectorAll('[data-key]');
-  elements.forEach(el => {
-    const key = el.getAttribute('data-key');
-    if (langData[lang][key]) {
-      el.innerHTML = langData[lang][key];
-    }
-  });
-}
+        // ======================================================================
+        //  QUIZ
+        // ======================================================================
+        const quizData = [{
+            q: 'Which AI superpower helps computers see and recognise faces?',
+            opts: ['Data Science', 'Computer Vision', 'NLP', 'Clustering'],
+            ans: 1
+        }, {
+            q: 'What does NLP help AI do?',
+            opts: ['Read and understand words', 'Drive cars', 'Paint pictures', 'Count numbers'],
+            ans: 0
+        }, {
+            q: 'Which technique groups similar things together without labels?',
+            opts: ['Classification', 'Regression', 'Clustering', 'Prediction'],
+            ans: 2
+        }, {
+            q: 'Data Science can predict things like:',
+            opts: ['Tomorrow\'s weather', 'The color of a cat', 'A person\'s name', 'A song\'s lyrics'],
+            ans: 0
+        }, {
+            q: 'Computer Vision is used in:',
+            opts: ['Face unlock on phones', 'Translating languages', 'Spam filters', 'Predicting sales'],
+            ans: 0
+        }];
 
-/* ── PARTICLES BACKGROUND ENGINE ── */
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-window.addEventListener('resize', () => { canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+        let qIndex = 0,
+            qScore = 0,
+            qAnswered = false;
 
-const pts = Array.from({length:45},() => ({
-  x: Math.random()*canvas.width,
-  y: Math.random()*canvas.height,
-  r: Math.random()*2.5+.5,
-  dx: (Math.random()-.5)*.4,
-  dy: (Math.random()-.5)*.4,
-  a: Math.random()
-}));
+        function renderQuiz() {
+            const container = document.getElementById('quizContainer');
+            const qText = document.getElementById('qText');
+            const opts = document.getElementById('qOptions');
+            const counter = document.getElementById('qCounter');
+            const fill = document.getElementById('qFill');
+            const score = document.getElementById('qScore');
+            const result = document.getElementById('qResult');
 
-function animPts() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  pts.forEach(p => {
-    p.x+=p.dx; p.y+=p.dy;
-    if(p.x<0||p.x>canvas.width) p.dx*=-1;
-    if(p.y<0||p.y>canvas.height) p.dy*=-1;
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(255,255,255,${.15+p.a*.2})`;
-    ctx.fill();
-  });
-  requestAnimationFrame(animPts);
-}
-animPts();
+            if (qIndex >= quizData.length) {
+                document.querySelector('.quiz-progress').classList.add('hidden');
+                qText.classList.add('hidden');
+                opts.classList.add('hidden');
+                document.getElementById('qNext').classList.add('hidden');
+                document.getElementById('qReset').classList.add('hidden');
+                result.classList.remove('hidden');
+                document.getElementById('finalScore').innerHTML = qScore + ' <span>/ ' + quizData.length + '</span>';
+                const msgs = ['Keep trying! 🌱', 'Good job! 💪', 'Awesome! 👏', 'Super star! 🌟', 'Perfect! 🏆'];
+                document.getElementById('finalMsg').textContent = msgs[Math.min(qScore, msgs.length - 1)];
+                if (qScore === quizData.length) launchConfetti();
+                return;
+            }
 
-/* ── INTERACTIVE STAR DECORATIONS ── */
-const starsEl = document.getElementById('stars');
-const starColors = ['#FFD166','#EF5DA8','#00B4A6','#FF6B35','#fff'];
-for(let i=0;i<20;i++){
-  const s=document.createElement('div');
-  s.className='star';
-  const sz=4+Math.random()*12;
-  s.style.cssText=`
-    width:${sz}px;height:${sz}px;
-    left:${Math.random()*100}%;top:${Math.random()*100}%;
-    background:${starColors[Math.floor(Math.random()*starColors.length)]};
-    --d:${1.5+Math.random()*2.5}s;--dl:${Math.random()*2}s;
-    opacity:.4;
-  `;
-  starsEl.appendChild(s);
-}
+            document.querySelector('.quiz-progress').classList.remove('hidden');
+            qText.classList.remove('hidden');
+            opts.classList.remove('hidden');
+            document.getElementById('qNext').classList.remove('hidden');
+            document.getElementById('qReset').classList.remove('hidden');
+            result.classList.add('hidden');
 
-/* ── NAVIGATION DECK SLIDES ENGINE ── */
-const slides = document.querySelectorAll('.slide');
-const dotsEl = document.getElementById('dots');
-const total = slides.length;
-let cur = 0;
+            const d = quizData[qIndex];
+            qText.innerHTML = `<i class="fas fa-question-circle" style="color:#7C5CFC;"></i> ${d.q}`;
+            counter.textContent = 'Q' + (qIndex + 1) + ' / ' + quizData.length;
+            fill.style.width = ((qIndex + 1) / quizData.length * 100) + '%';
+            score.textContent = '⭐ ' + qScore;
 
-slides.forEach((_,i)=>{
-  const d=document.createElement('div');
-  d.className='dot'+(i===0?' on':'');
-  d.onclick=()=>goTo(i);
-  dotsEl.appendChild(d);
-});
+            opts.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            d.opts.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<span class="letter">${letters[i]}</span> ${opt}`;
+                div.dataset.idx = i;
+                div.addEventListener('click', () => selectQuizOption(i));
+                opts.appendChild(div);
+            });
+            qAnswered = false;
+            document.getElementById('qNext').disabled = false;
+        }
 
-function goTo(n){
-  slides[cur].classList.remove('active');
-  cur=Math.max(0,Math.min(total-1,n));
-  slides[cur].classList.add('active');
-  
-  // Re-trigger visual entry animations smoothly
-  slides[cur].querySelectorAll('[style*="animation-delay"]').forEach(el=>{
-    el.style.animationName='none';
-    requestAnimationFrame(()=>{ el.style.animationName=''; });
-  });
-  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
-  document.getElementById('counter').textContent=`${cur+1} / ${total}`;
-  document.getElementById('progress-bar').style.width=`${(cur+1)/total*100}%`;
-}
-function go(d){ goTo(cur+d); }
+        function selectQuizOption(idx) {
+            if (qAnswered) return;
+            const d = quizData[qIndex];
+            const opts = document.querySelectorAll('#qOptions .option');
+            opts.forEach((el, i) => {
+                el.classList.remove('selected', 'correct', 'wrong');
+                if (i === d.ans) el.classList.add('correct');
+                if (i === idx && i !== d.ans) el.classList.add('wrong');
+                if (i === idx) el.classList.add('selected');
+                el.style.cursor = 'default';
+                el.onclick = null;
+            });
+            if (idx === d.ans) {
+                qScore++;
+                addStars(1);
+                playBeep(true);
+                mascotSay("Correct! Great pattern-spotting! 🎉");
+            } else {
+                playBeep(false);
+                mascotSay("Not quite — check the green answer!");
+            }
+            qAnswered = true;
+            document.getElementById('qScore').textContent = '⭐ ' + qScore;
+        }
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key===' ') go(1);
-  if(e.key==='ArrowLeft') go(-1);
-});
+        document.getElementById('qNext').addEventListener('click', () => {
+            if (!qAnswered && qIndex < quizData.length) {
+                showToast('Please choose an answer!');
+                return;
+            }
+            qIndex++;
+            renderQuiz();
+        });
 
-/* ── BURST EMOJI ANIMATION SYSTEM ── */
-function burst(el, emoji){
-  const rect=el.getBoundingClientRect();
-  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-  for(let i=0;i<7;i++){
-    const b=document.createElement('div');
-    b.className='burst';
-    b.textContent=emoji;
-    const angle=Math.random()*Math.PI*2;
-    const dist=70+Math.random()*70;
-    b.style.cssText=`left:${cx}px;top:${cy}px;--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;animation-delay:${i*.04}s`;
-    document.body.appendChild(b);
-    setTimeout(()=>b.remove(),900);
-  }
-}
+        document.getElementById('qReset').addEventListener('click', resetQuiz);
 
-function revealQ(card){
-  card.classList.toggle('revealed');
-  if(card.classList.contains('revealed')) burst(card,'🎉');
-}
+        function resetQuiz() {
+            qIndex = 0;
+            qScore = 0;
+            qAnswered = false;
+            renderQuiz();
+        }
 
-function revealRisk(el, riskKey){
-  el.classList.add('danger');
-  el.style.background='var(--orange)';
-  el.style.color='#fff';
-  
-  const msg = riskAlerts[currentLang][riskKey];
-  document.getElementById('risk-tip').textContent = msg;
-  document.getElementById('risk-tip').style.background = '#B71C1C';
-  setTimeout(()=>el.classList.remove('danger'),1000);
-}
+        // ======================================================================
+        //  MATCHING GAME
+        // ======================================================================
+        const matchPairs = [
+            { left: 'Predict tomorrow\'s temperature', right: 'Data Science' },
+            { left: 'Recognise your face to unlock phone', right: 'Computer Vision' },
+            { left: 'Translate English to Hindi', right: 'NLP' },
+            { left: 'Sort emails as spam or not spam', right: 'Data Science' },
+            { left: 'Read handwritten numbers', right: 'Computer Vision' },
+            { left: 'Chat with a robot like Siri', right: 'NLP' },
+        ];
 
-// Initialize Active Presentation View
-goTo(0);
-</script>
+        let matchState = { left: [], right: [], selected: null, matched: new Set() };
+
+        function initMatchGame() {
+            const left = document.getElementById('matchLeft');
+            const right = document.getElementById('matchRight');
+            const status = document.getElementById('matchStatus');
+            const win = document.getElementById('matchWin');
+
+            matchState.matched = new Set();
+            matchState.selected = null;
+            win.classList.add('hidden');
+            status.textContent = 'Match pairs to win!';
+
+            const shuffledLeft = [...matchPairs].sort(() => Math.random() - 0.5);
+            const shuffledRight = [...matchPairs].sort(() => Math.random() - 0.5);
+
+            left.innerHTML = '';
+            shuffledLeft.forEach((p, i) => {
+                const el = document.createElement('div');
+                el.className = 'match-item';
+                el.dataset.id = 'l' + i;
+                el.dataset.pair = p.left;
+                el.textContent = p.left;
+                el.addEventListener('click', () => handleMatchClick('left', el, p.left));
+                left.appendChild(el);
+            });
+
+            right.innerHTML = '';
+            shuffledRight.forEach((p, i) => {
+                const el = document.createElement('div');
+                el.className = 'match-item';
+                el.dataset.id = 'r' + i;
+                el.dataset.pair = p.right;
+                el.textContent = p.right;
+                el.addEventListener('click', () => handleMatchClick('right', el, p.right));
+                right.appendChild(el);
+            });
+
+            matchState.left = [...left.children];
+            matchState.right = [...right.children];
+        }
+
+        function handleMatchClick(side, el, value) {
+            if (matchState.matched.has(value)) return;
+
+            if (side === 'left') {
+                document.querySelectorAll('.match-item.selected-match').forEach(e => e.classList.remove('selected-match'));
+                el.classList.add('selected-match');
+                matchState.selected = { side: 'left', el, value };
+            } else if (side === 'right') {
+                if (!matchState.selected || matchState.selected.side !== 'left') {
+                    document.querySelectorAll('.match-item.selected-match').forEach(e => e.classList.remove('selected-match'));
+                    el.classList.add('selected-match');
+                    matchState.selected = { side: 'right', el, value };
+                    return;
+                }
+                const leftVal = matchState.selected.value;
+                const rightVal = value;
+                const isValid = matchPairs.some(p =>
+                    (p.left === leftVal && p.right === rightVal) ||
+                    (p.left === rightVal && p.right === leftVal)
+                );
+                const leftEl = matchState.selected.el;
+                if (isValid) {
+                    leftEl.classList.remove('selected-match');
+                    leftEl.classList.add('matched');
+                    el.classList.add('matched');
+                    matchState.matched.add(leftVal);
+                    matchState.matched.add(rightVal);
+                    document.getElementById('matchStatus').textContent = `✅ Matched! (${matchState.matched.size/2}/${matchPairs.length})`;
+                    addStars(1);
+                    playBeep(true);
+                } else {
+                    leftEl.classList.remove('selected-match');
+                    el.classList.add('wrong-match');
+                    setTimeout(() => el.classList.remove('wrong-match'), 400);
+                    document.getElementById('matchStatus').textContent = '❌ Not a match, try again!';
+                    playBeep(false);
+                }
+                matchState.selected = null;
+                document.querySelectorAll('.match-item.selected-match').forEach(e => e.classList.remove('selected-match'));
+
+                if (matchState.matched.size / 2 === matchPairs.length) {
+                    document.getElementById('matchWin').classList.remove('hidden');
+                    document.getElementById('matchStatus').textContent = '🏆 You matched everything!';
+                    launchConfetti();
+                }
+            }
+        }
+
+        // ======================================================================
+        //  EXAM
+        // ======================================================================
+        const examData = [{
+            q: 'Which AI domain helps computers understand human language?',
+            opts: ['Data Science', 'Computer Vision', 'NLP', 'Clustering'],
+            ans: 2
+        }, {
+            q: 'What does Computer Vision do?',
+            opts: ['Read text', 'Recognise images', 'Predict numbers', 'Group items'],
+            ans: 1
+        }, {
+            q: 'Data Science can help predict:',
+            opts: ['The weather', 'A person\'s name', 'The color of a car', 'A song\'s melody'],
+            ans: 0
+        }, {
+            q: 'Clustering groups things that are:',
+            opts: ['Different', 'Similar', 'Random', 'Large'],
+            ans: 1
+        }, {
+            q: 'Regression predicts a:',
+            opts: ['Category', 'Number', 'Word', 'Image'],
+            ans: 1
+        }];
+
+        let examIndex = 0,
+            examScore = 0,
+            examAnswered = false,
+            examTimer = 60,
+            examInterval = null,
+            examActive = false;
+
+        function renderExam() {
+            const qText = document.getElementById('examQText');
+            const opts = document.getElementById('examOptions');
+            const progress = document.getElementById('examProgress');
+            const score = document.getElementById('examScore');
+            const result = document.getElementById('examResult');
+            const timerEl = document.getElementById('examTimer');
+
+            if (examIndex >= examData.length || examTimer <= 0) {
+                clearInterval(examInterval);
+                examActive = false;
+                document.querySelector('.exam-timer').classList.add('hidden');
+                qText.classList.add('hidden');
+                opts.classList.add('hidden');
+                document.getElementById('examNext').classList.add('hidden');
+                progress.classList.add('hidden');
+                result.classList.remove('hidden');
+                document.getElementById('examFinalScore').innerHTML = examScore + ' <span>/ ' + examData.length + '</span>';
+                const msgs = ['Time\'s up! Keep going 💪', 'Good effort! 🌱', 'Nice work! 👏', 'Great! 🌟', 'Amazing! 🏆'];
+                document.getElementById('examFinalMsg').textContent = msgs[Math.min(examScore, msgs.length - 1)];
+                if (examScore === examData.length) launchConfetti();
+                return;
+            }
+
+            document.querySelector('.exam-timer').classList.remove('hidden');
+            qText.classList.remove('hidden');
+            opts.classList.remove('hidden');
+            document.getElementById('examNext').classList.remove('hidden');
+            progress.classList.remove('hidden');
+            result.classList.add('hidden');
+
+            const d = examData[examIndex];
+            qText.innerHTML = `<i class="fas fa-bolt" style="color:#FFAE00;"></i> ${d.q}`;
+            progress.textContent = (examIndex + 1) + ' / ' + examData.length;
+            score.textContent = '⭐ ' + examScore;
+
+            opts.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+            d.opts.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerHTML = `<span class="letter">${letters[i]}</span> ${opt}`;
+                div.dataset.idx = i;
+                div.addEventListener('click', () => selectExamOption(i));
+                opts.appendChild(div);
+            });
+            examAnswered = false;
+            document.getElementById('examNext').disabled = false;
+
+            if (!examActive) {
+                examActive = true;
+                examTimer = 60;
+                timerEl.textContent = examTimer;
+                timerEl.classList.remove('warning');
+                clearInterval(examInterval);
+                examInterval = setInterval(() => {
+                    examTimer--;
+                    timerEl.textContent = examTimer;
+                    if (examTimer <= 10) timerEl.classList.add('warning');
+                    if (examTimer <= 0) {
+                        clearInterval(examInterval);
+                        examActive = false;
+                        renderExam();
+                    }
+                }, 1000);
+            }
+        }
+
+        function selectExamOption(idx) {
+            if (examAnswered || examTimer <= 0) return;
+            const d = examData[examIndex];
+            const opts = document.querySelectorAll('#examOptions .option');
+            opts.forEach((el, i) => {
+                el.classList.remove('selected', 'correct', 'wrong');
+                if (i === d.ans) el.classList.add('correct');
+                if (i === idx && i !== d.ans) el.classList.add('wrong');
+                if (i === idx) el.classList.add('selected');
+                el.style.cursor = 'default';
+                el.onclick = null;
+            });
+            if (idx === d.ans) {
+                examScore++;
+                addStars(1);
+                playBeep(true);
+            } else {
+                playBeep(false);
+            }
+            examAnswered = true;
+            document.getElementById('examScore').textContent = '⭐ ' + examScore;
+        }
+
+        document.getElementById('examNext').addEventListener('click', () => {
+            if (!examAnswered && examIndex < examData.length) {
+                showToast('Please choose an answer!');
+                return;
+            }
+            examIndex++;
+            renderExam();
+        });
+
+        function resetExam() {
+            clearInterval(examInterval);
+            examActive = false;
+            examIndex = 0;
+            examScore = 0;
+            examAnswered = false;
+            examTimer = 60;
+            document.getElementById('examTimer').textContent = '60';
+            document.getElementById('examTimer').classList.remove('warning');
+            renderExam();
+        }
+
+        // ======================================================================
+        //  PRICE PREDICTOR (with live chart)
+        // ======================================================================
+        const areaSlider = document.getElementById('areaSlider');
+        const areaInput = document.getElementById('areaInput');
+        const areaValue = document.getElementById('areaValue');
+        const priceResult = document.getElementById('priceResult');
+        const predictionExplanation = document.getElementById('predictionExplanation');
+        const houseEmoji = document.getElementById('houseEmoji');
+
+        function priceFormula(area) {
+            return 5000 * area + 100000;
+        }
+
+        const priceChartPoints = [500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
+            .map(a => ({ x: a, y: priceFormula(a) }));
+
+        let priceChart = null;
+
+        function initPriceChart() {
+            priceChart = new Chart(document.getElementById('priceChart'), {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'AI\'s price line',
+                        type: 'line',
+                        data: priceChartPoints,
+                        borderColor: '#7C5CFC',
+                        backgroundColor: 'rgba(124,92,252,0.08)',
+                        fill: true,
+                        tension: 0,
+                        pointRadius: 0
+                    }, {
+                        label: 'Your house',
+                        data: [{ x: 1500, y: priceFormula(1500) }],
+                        backgroundColor: '#FFAE00',
+                        pointRadius: 8,
+                        pointHoverRadius: 9
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+                    scales: {
+                        x: { title: { display: true, text: 'Square feet' }, grid: { color: '#f0f0f8' } },
+                        y: { title: { display: true, text: 'Price (₹)' }, grid: { color: '#f0f0f8' } }
+                    }
+                }
+            });
+        }
+
+        function updatePrice(area) {
+            area = Number(area);
+            if (area < 500) area = 500;
+            if (area > 5000) area = 5000;
+            const price = priceFormula(area);
+            const formatted = new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 })
+                .format(price);
+            priceResult.textContent = formatted;
+            areaValue.textContent = area;
+            areaSlider.value = area;
+            areaInput.value = area;
+            predictionExplanation.textContent =
+                `For ${area} sq ft, the predicted price is ${formatted}. (Using formula: Price = ₹5000 × sqft + ₹100,000)`;
+            const scale = 1.5 + (area - 500) / (5000 - 500) * 2.5;
+            houseEmoji.style.fontSize = scale + 'rem';
+            houseEmoji.textContent = area > 3200 ? '🏰' : (area > 1800 ? '🏡' : '🏠');
+            if (priceChart) {
+                priceChart.data.datasets[1].data = [{ x: area, y: price }];
+                priceChart.update();
+            }
+        }
+
+        areaSlider.addEventListener('input', () => updatePrice(areaSlider.value));
+        areaInput.addEventListener('input', () => updatePrice(areaInput.value));
+
+        // ======================================================================
+        //  REGRESSION PLAYGROUND
+        // ======================================================================
+        const regCanvas = document.getElementById('regCanvas');
+        const regCtx = regCanvas.getContext('2d');
+        let regPoints = [];
+        let regLine = null;
+
+        function resizeRegCanvas() {
+            const holder = regCanvas.parentElement;
+            regCanvas.width = holder.clientWidth;
+            regCanvas.height = 340;
+            drawRegBoard();
+        }
+
+        function drawRegBoard() {
+            regCtx.clearRect(0, 0, regCanvas.width, regCanvas.height);
+            // faint grid
+            regCtx.strokeStyle = '#e3e5f5';
+            regCtx.lineWidth = 1;
+            for (let gx = 0; gx < regCanvas.width; gx += 40) {
+                regCtx.beginPath();
+                regCtx.moveTo(gx, 0);
+                regCtx.lineTo(gx, regCanvas.height);
+                regCtx.stroke();
+            }
+            for (let gy = 0; gy < regCanvas.height; gy += 40) {
+                regCtx.beginPath();
+                regCtx.moveTo(0, gy);
+                regCtx.lineTo(regCanvas.width, gy);
+                regCtx.stroke();
+            }
+            // regression line first (so dots sit on top)
+            if (regLine) {
+                regCtx.strokeStyle = '#00BFB3';
+                regCtx.lineWidth = 4;
+                regCtx.beginPath();
+                regCtx.moveTo(0, regLine.m * 0 + regLine.b);
+                regCtx.lineTo(regCanvas.width, regLine.m * regCanvas.width + regLine.b);
+                regCtx.stroke();
+            }
+            // dots
+            regPoints.forEach(p => {
+                regCtx.fillStyle = '#7C5CFC';
+                regCtx.beginPath();
+                regCtx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+                regCtx.fill();
+                regCtx.strokeStyle = '#fff';
+                regCtx.lineWidth = 2;
+                regCtx.stroke();
+            });
+        }
+
+        regCanvas.addEventListener('click', (e) => {
+            const rect = regCanvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left) * (regCanvas.width / rect.width);
+            const y = (e.clientY - rect.top) * (regCanvas.height / rect.height);
+            regPoints.push({ x, y });
+            regLine = null;
+            document.getElementById('regLineStatus').textContent = 'Not yet';
+            document.getElementById('regCount').textContent = regPoints.length;
+            document.getElementById('regStars').textContent = '☆☆☆☆☆';
+            drawRegBoard();
+        });
+
+        function fitRegLine() {
+            if (regPoints.length < 2) {
+                showToast('Add at least 2 dots first!');
+                mascotSay("I need at least 2 dots to find a pattern!");
+                return;
+            }
+            const n = regPoints.length;
+            const sumX = regPoints.reduce((s, p) => s + p.x, 0);
+            const sumY = regPoints.reduce((s, p) => s + p.y, 0);
+            const sumXY = regPoints.reduce((s, p) => s + p.x * p.y, 0);
+            const sumXX = regPoints.reduce((s, p) => s + p.x * p.x, 0);
+            const meanY = sumY / n;
+            const denom = (n * sumXX - sumX * sumX);
+            let m = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0;
+            let b = (sumY - m * sumX) / n;
+            regLine = { m, b };
+
+            // rough R^2 for fun star-rating
+            const ssTot = regPoints.reduce((s, p) => s + (p.y - meanY) ** 2, 0);
+            const ssRes = regPoints.reduce((s, p) => {
+                const pred = m * p.x + b;
+                return s + (p.y - pred) ** 2;
+            }, 0);
+            const r2 = ssTot > 0 ? Math.max(0, 1 - ssRes / ssTot) : 1;
+            const starCount = Math.max(1, Math.round(r2 * 5));
+            document.getElementById('regStars').textContent = '⭐'.repeat(starCount) + '☆'.repeat(5 - starCount);
+
+            document.getElementById('regLineStatus').textContent = 'Yes! 🎉';
+            drawRegBoard();
+            addStars(1);
+            playBeep(true);
+            launchConfetti(20);
+            showToast('The AI found a pattern in your dots!');
+            mascotSay(starCount >= 4 ? "Wow, that's a really strong pattern! 🌟" : "I found a pattern — try neater dots for more stars!");
+        }
+
+        document.getElementById('regFitBtn').addEventListener('click', fitRegLine);
+        document.getElementById('regClearBtn').addEventListener('click', () => {
+            regPoints = [];
+            regLine = null;
+            document.getElementById('regCount').textContent = 0;
+            document.getElementById('regLineStatus').textContent = 'Not yet';
+            document.getElementById('regStars').textContent = '☆☆☆☆☆';
+            drawRegBoard();
+        });
+        document.getElementById('regRandomBtn').addEventListener('click', () => {
+            const baseM = 0.4 + Math.random() * 0.3;
+            const baseB = 40 + Math.random() * 100;
+            for (let i = 0; i < 6; i++) {
+                const x = 30 + Math.random() * (regCanvas.width - 60);
+                const noise = (Math.random() - 0.5) * 60;
+                const y = Math.min(regCanvas.height - 20, Math.max(20, baseM * x + baseB * 0.3 + noise));
+                regPoints.push({ x, y });
+            }
+            regLine = null;
+            document.getElementById('regLineStatus').textContent = 'Not yet';
+            document.getElementById('regCount').textContent = regPoints.length;
+            document.getElementById('regStars').textContent = '☆☆☆☆☆';
+            drawRegBoard();
+        });
+        window.addEventListener('resize', resizeRegCanvas);
+
+        // ======================================================================
+        //  CLASSIFICATION SORT GAME
+        // ======================================================================
+        const sortSets = [{
+            a: { name: 'Fruit', emoji: '🍎' },
+            b: { name: 'Vegetable', emoji: '🥕' },
+            items: [
+                { name: 'Apple', emoji: '🍎', group: 'a' },
+                { name: 'Banana', emoji: '🍌', group: 'a' },
+                { name: 'Grapes', emoji: '🍇', group: 'a' },
+                { name: 'Mango', emoji: '🥭', group: 'a' },
+                { name: 'Carrot', emoji: '🥕', group: 'b' },
+                { name: 'Potato', emoji: '🥔', group: 'b' },
+                { name: 'Broccoli', emoji: '🥦', group: 'b' },
+                { name: 'Onion', emoji: '🧅', group: 'b' }
+            ]
+        }, {
+            a: { name: 'Land Animal', emoji: '🐘' },
+            b: { name: 'Sea Animal', emoji: '🐟' },
+            items: [
+                { name: 'Elephant', emoji: '🐘', group: 'a' },
+                { name: 'Lion', emoji: '🦁', group: 'a' },
+                { name: 'Dog', emoji: '🐶', group: 'a' },
+                { name: 'Rabbit', emoji: '🐰', group: 'a' },
+                { name: 'Fish', emoji: '🐟', group: 'b' },
+                { name: 'Octopus', emoji: '🐙', group: 'b' },
+                { name: 'Crab', emoji: '🦀', group: 'b' },
+                { name: 'Whale', emoji: '🐳', group: 'b' }
+            ]
+        }, {
+            a: { name: 'Vehicle', emoji: '🚗' },
+            b: { name: 'Not a Vehicle', emoji: '🏠' },
+            items: [
+                { name: 'Car', emoji: '🚗', group: 'a' },
+                { name: 'Bicycle', emoji: '🚲', group: 'a' },
+                { name: 'Airplane', emoji: '✈️', group: 'a' },
+                { name: 'Train', emoji: '🚆', group: 'a' },
+                { name: 'House', emoji: '🏠', group: 'b' },
+                { name: 'Tree', emoji: '🌳', group: 'b' },
+                { name: 'Book', emoji: '📚', group: 'b' },
+                { name: 'Chair', emoji: '🪑', group: 'b' }
+            ]
+        }];
+
+        let sortCurrentSet = null;
+        let sortScore = 0;
+        let sortSelectedItem = null;
+        let sortRemaining = 0;
+
+        function initSortGame() {
+            sortCurrentSet = sortSets[Math.floor(Math.random() * sortSets.length)];
+            sortScore = 0;
+            sortSelectedItem = null;
+            document.getElementById('sortScore').textContent = '⭐ 0';
+            document.getElementById('sortStatus').textContent = 'Sort all 8 items!';
+            document.getElementById('bucketATitle').textContent = sortCurrentSet.a.emoji + ' ' + sortCurrentSet.a.name;
+            document.getElementById('bucketBTitle').textContent = sortCurrentSet.b.emoji + ' ' + sortCurrentSet.b.name;
+            const tray = document.getElementById('sortTray');
+            const bucketA = document.getElementById('bucketAItems');
+            const bucketB = document.getElementById('bucketBItems');
+            tray.innerHTML = '';
+            bucketA.innerHTML = '';
+            bucketB.innerHTML = '';
+
+            const shuffled = [...sortCurrentSet.items].sort(() => Math.random() - 0.5);
+            sortRemaining = shuffled.length;
+            shuffled.forEach((item, i) => {
+                const el = document.createElement('div');
+                el.className = 'sort-item';
+                el.draggable = true;
+                el.dataset.group = item.group;
+                el.dataset.id = 'item' + i;
+                el.innerHTML = `${item.emoji}<span class="name">${item.name}</span>`;
+
+                el.addEventListener('click', () => {
+                    if (sortSelectedItem === el) {
+                        el.classList.remove('selected');
+                        sortSelectedItem = null;
+                        return;
+                    }
+                    document.querySelectorAll('.sort-item.selected').forEach(s => s.classList.remove('selected'));
+                    el.classList.add('selected');
+                    sortSelectedItem = el;
+                });
+
+                el.addEventListener('dragstart', () => {
+                    el.classList.add('dragging');
+                    sortSelectedItem = el;
+                });
+                el.addEventListener('dragend', () => el.classList.remove('dragging'));
+
+                tray.appendChild(el);
+            });
+        }
+
+        function trySortDrop(el, targetGroup) {
+            if (!el || el.dataset.placed) return;
+            const correct = el.dataset.group === targetGroup;
+            const destination = targetGroup === 'a' ? document.getElementById('bucketAItems') : document.getElementById(
+            'bucketBItems');
+            if (correct) {
+                el.classList.remove('selected', 'dragging');
+                el.classList.add('correct-flash');
+                el.dataset.placed = 'true';
+                destination.appendChild(el);
+                sortScore++;
+                sortRemaining--;
+                addStars(1);
+                playBeep(true);
+                document.getElementById('sortScore').textContent = '⭐ ' + sortScore;
+                if (sortRemaining <= 0) {
+                    document.getElementById('sortStatus').textContent = '🏆 All sorted! Great classifying!';
+                    launchConfetti();
+                } else {
+                    document.getElementById('sortStatus').textContent = `Nice! ${sortRemaining} left.`;
+                }
+            } else {
+                el.classList.add('wrong-flash');
+                playBeep(false);
+                document.getElementById('sortStatus').textContent = '❌ Not quite — try another basket!';
+                setTimeout(() => el.classList.remove('wrong-flash'), 400);
+            }
+            sortSelectedItem = null;
+        }
+
+        [
+            ['bucketA', 'a'],
+            ['bucketB', 'b']
+        ].forEach(([bucketId, group]) => {
+            const bucketEl = document.querySelector(`.${bucketId === 'bucketA' ? 'bucket-a' : 'bucket-b'}`);
+            bucketEl.addEventListener('click', () => {
+                if (sortSelectedItem) trySortDrop(sortSelectedItem, group);
+            });
+            bucketEl.addEventListener('dragover', (e) => e.preventDefault());
+            bucketEl.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const dragging = document.querySelector('.sort-item.dragging');
+                if (dragging) trySortDrop(dragging, group);
+            });
+        });
+
+        document.getElementById('sortResetBtn').addEventListener('click', initSortGame);
+
+        // ======================================================================
+        //  CLUSTERING GAME
+        // ======================================================================
+        const clusterKinds = [
+            { emoji: '🔴', color: '#ff6b6b' },
+            { emoji: '🟢', color: '#00BFB3' },
+            { emoji: '🟣', color: '#7C5CFC' }
+        ];
+        let clusterItems = [];
+        let clusterPicked = [];
+        let clusterGroupsFormed = 0;
+
+        function initClusterGame() {
+            const field = document.getElementById('clusterField');
+            field.innerHTML = '';
+            clusterItems = [];
+            clusterPicked = [];
+            clusterGroupsFormed = 0;
+            document.getElementById('clusterStatus').textContent = 'Pick items that look alike, then group them.';
+
+            const fw = field.clientWidth || 600;
+            const fh = 340;
+            const perKind = 4;
+            let id = 0;
+            clusterKinds.forEach(kind => {
+                for (let i = 0; i < perKind; i++) {
+                    clusterItems.push({
+                        id: 'c' + (id++),
+                        kind: kind.emoji,
+                        color: kind.color,
+                        x: 20 + Math.random() * (fw - 70),
+                        y: 20 + Math.random() * (fh - 70)
+                    });
+                }
+            });
+
+            clusterItems.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'cluster-dot';
+                el.style.left = item.x + 'px';
+                el.style.top = item.y + 'px';
+                el.style.background = item.color;
+                el.textContent = item.kind;
+                el.dataset.id = item.id;
+                el.addEventListener('click', () => toggleClusterPick(el, item));
+                field.appendChild(el);
+                item.el = el;
+            });
+        }
+
+        function toggleClusterPick(el, item) {
+            if (el.classList.contains('grouped')) return;
+            const idx = clusterPicked.findIndex(p => p.id === item.id);
+            if (idx >= 0) {
+                clusterPicked.splice(idx, 1);
+                el.classList.remove('picked');
+            } else {
+                clusterPicked.push(item);
+                el.classList.add('picked');
+            }
+        }
+
+        document.getElementById('clusterGroupBtn').addEventListener('click', () => {
+            if (clusterPicked.length < 2) {
+                showToast('Pick at least 2 that look alike!');
+                return;
+            }
+            const allSame = clusterPicked.every(p => p.kind === clusterPicked[0].kind);
+            if (allSame) {
+                clusterPicked.forEach(p => {
+                    p.el.classList.remove('picked');
+                    p.el.classList.add('grouped');
+                });
+                clusterGroupsFormed++;
+                addStars(1);
+                playBeep(true);
+                document.getElementById('clusterStatus').textContent = `✅ Great cluster! (${clusterGroupsFormed}/3 groups found)`;
+                if (clusterGroupsFormed >= 3) {
+                    document.getElementById('clusterStatus').textContent = '🏆 You found every cluster, just like AI does!';
+                    launchConfetti();
+                }
+            } else {
+                playBeep(false);
+                document.getElementById('clusterStatus').textContent = '❌ Those don\'t match — look for the same color/shape!';
+                clusterPicked.forEach(p => p.el.classList.remove('picked'));
+            }
+            clusterPicked = [];
+        });
+
+        document.getElementById('clusterResetBtn').addEventListener('click', initClusterGame);
+
+        // ======================================================================
+        //  VOICE ASSISTANT
+        // ======================================================================
+        const voiceBtn = document.getElementById('voiceBtn');
+        const transcriptDisplay = document.getElementById('transcriptDisplay');
+        const recordingStatus = document.getElementById('recordingStatus');
+        let recognition = null;
+        let isRecording = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                isRecording = true;
+                voiceBtn.classList.add('recording');
+                recordingStatus.textContent = '🎤 Listening... Speak now!';
+                transcriptDisplay.textContent = '...';
+            };
+
+            recognition.onresult = (event) => {
+                const last = event.results.length - 1;
+                const text = event.results[last][0].transcript;
+                transcriptDisplay.textContent = text;
+                recordingStatus.textContent = '✅ Heard you!';
+                voiceBtn.classList.remove('recording');
+                isRecording = false;
+            };
+
+            recognition.onerror = (event) => {
+                recordingStatus.textContent = '❌ Error: ' + event.error;
+                voiceBtn.classList.remove('recording');
+                isRecording = false;
+            };
+
+            recognition.onend = () => {
+                recordingStatus.textContent = 'Press the button to speak again.';
+                voiceBtn.classList.remove('recording');
+                isRecording = false;
+            };
+
+            voiceBtn.addEventListener('click', () => {
+                if (isRecording) {
+                    recognition.stop();
+                } else {
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        recordingStatus.textContent = '⚠️ Please allow microphone access.';
+                    }
+                }
+            });
+        } else {
+            voiceBtn.style.display = 'none';
+            recordingStatus.textContent = '⚠️ Speech recognition not supported in this browser. Try Chrome/Edge.';
+        }
+
+        // Text-to-Speech
+        const ttsBtn = document.getElementById('ttsBtn');
+        const ttsInput = document.getElementById('ttsInput');
+        if ('speechSynthesis' in window) {
+            ttsBtn.addEventListener('click', () => {
+                const text = ttsInput.value.trim();
+                if (!text) return;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            });
+        } else {
+            ttsBtn.style.display = 'none';
+        }
+
+        // ======================================================================
+        //  ODIA WORD SPEAKER — FIXED!
+        // ======================================================================
+        const odiaDict = [
+            { en: 'apple', emoji: '🍎', odia: 'ଆପେଲ', roman: 'aa-pel' },
+            { en: 'banana', emoji: '🍌', odia: 'କଦଳୀ', roman: 'ka-da-li' },
+            { en: 'mango', emoji: '🥭', odia: 'ଆମ୍ବ', roman: 'aam-ba' },
+            { en: 'water', emoji: '💧', odia: 'ପାଣି', roman: 'paa-ni' },
+            { en: 'dog', emoji: '🐶', odia: 'କୁକୁର', roman: 'ku-ku-ra' },
+            { en: 'cat', emoji: '🐱', odia: 'ବିରାଳ', roman: 'bi-raa-la' },
+            { en: 'elephant', emoji: '🐘', odia: 'ହାତୀ', roman: 'haa-thi' },
+            { en: 'bird', emoji: '🐦', odia: 'ପକ୍ଷୀ', roman: 'pak-shee' },
+            { en: 'fish', emoji: '🐟', odia: 'ମାଛ', roman: 'maa-cha' },
+            { en: 'sun', emoji: '☀️', odia: 'ସୂର୍ଯ୍ୟ', roman: 'soor-ya' },
+            { en: 'moon', emoji: '🌙', odia: 'ଚନ୍ଦ୍ର', roman: 'chan-dra' },
+            { en: 'star', emoji: '⭐', odia: 'ତାରା', roman: 'taa-raa' },
+            { en: 'book', emoji: '📚', odia: 'ବହି', roman: 'ba-hi' },
+            { en: 'pen', emoji: '🖊️', odia: 'କଲମ', roman: 'ka-la-ma' },
+            { en: 'school', emoji: '🏫', odia: 'ବିଦ୍ୟାଳୟ', roman: 'bi-dyaa-la-ya' },
+            { en: 'friend', emoji: '🧑‍🤝‍🧑', odia: 'ବନ୍ଧୁ', roman: 'ban-dhu' },
+            { en: 'mother', emoji: '👩', odia: 'ମା', roman: 'maa' },
+            { en: 'father', emoji: '👨', odia: 'ବାପା', roman: 'baa-paa' },
+            { en: 'house', emoji: '🏠', odia: 'ଘର', roman: 'gha-ra' },
+            { en: 'flower', emoji: '🌸', odia: 'ଫୁଲ', roman: 'phu-la' },
+            { en: 'tree', emoji: '🌳', odia: 'ଗଛ', roman: 'ga-cha' },
+            { en: 'red', emoji: '🔴', odia: 'ଲାଲ', roman: 'laa-la' },
+            { en: 'blue', emoji: '🔵', odia: 'ନୀଳ', roman: 'nee-la' },
+            { en: 'green', emoji: '🟢', odia: 'ସବୁଜ', roman: 'sa-bu-ja' },
+            { en: 'yellow', emoji: '🟡', odia: 'ହଳଦିଆ', roman: 'ha-la-dee-aa' },
+            { en: 'one', emoji: '1️⃣', odia: 'ଏକ', roman: 'e-ka' },
+            { en: 'two', emoji: '2️⃣', odia: 'ଦୁଇ', roman: 'du-i' },
+            { en: 'three', emoji: '3️⃣', odia: 'ତିନି', roman: 'ti-ni' },
+            { en: 'four', emoji: '4️⃣', odia: 'ଚାରି', roman: 'chaa-ri' },
+            { en: 'five', emoji: '5️⃣', odia: 'ପାଞ୍ଚ', roman: 'paan-cha' },
+            { en: 'hello', emoji: '👋', odia: 'ନମସ୍କାର', roman: 'na-mas-kaa-ra' },
+            { en: 'thank you', emoji: '🙏', odia: 'ଧନ୍ୟବାଦ', roman: 'dhan-ya-baa-da' },
+            { en: 'robot', emoji: '🤖', odia: 'ରୋବଟ', roman: 'ro-ba-ta' },
+            { en: 'computer', emoji: '💻', odia: 'କମ୍ପ୍ୟୁଟର', roman: 'kam-pyu-ta-ra' },
+            { en: 'phone', emoji: '📱', odia: 'ଫୋନ', roman: 'pho-na' }
+        ];
+
+        function showOdiaResult(entry) {
+            document.getElementById('odiaResultBox').classList.remove('hidden');
+            document.getElementById('odiaEnglishWord').textContent = entry.emoji + '  ' + entry.en;
+            document.getElementById('odiaScriptWord').textContent = entry.odia;
+            document.getElementById('odiaRomanWord').textContent = '(' + entry.roman + ')';
+        }
+
+        // ── Robust Odia speaker with voice fallback ──
+        function speakOdia(entry) {
+            showOdiaResult(entry);
+
+            // Update status
+            const status = document.getElementById('odiaStatus');
+            status.textContent = '🔊 Speaking: "' + entry.odia + '" …';
+
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+
+                const utter = new SpeechSynthesisUtterance(entry.odia);
+                utter.rate = 0.72;
+                utter.pitch = 1.0;
+
+                // Wait for voices to load if needed
+                let voices = speechSynthesis.getVoices();
+                if (voices.length === 0) {
+                    speechSynthesis.onvoiceschanged = () => {
+                        voices = speechSynthesis.getVoices();
+                        pickAndSpeak(voices, utter, status);
+                    };
+                } else {
+                    pickAndSpeak(voices, utter, status);
+                }
+
+                // Fallback timeout: if onvoiceschanged never fires, try after 800ms
+                setTimeout(() => {
+                    if (voices.length > 0) {
+                        pickAndSpeak(voices, utter, status);
+                    } else {
+                        // final fallback: speak in English with the Odia word
+                        const fallback = new SpeechSynthesisUtterance(entry.en + ' in Odia is ' + entry.odia);
+                        fallback.lang = 'en-US';
+                        fallback.rate = 0.8;
+                        speechSynthesis.speak(fallback);
+                        status.textContent = '🔊 Using English fallback — Odia text shown above!';
+                        showToast('No Odia voice found — using English fallback.');
+                    }
+                }, 1000);
+
+            } else {
+                status.textContent = '⚠️ Speech not supported on this device — but Odia text is shown!';
+                showToast('Your browser doesn\'t support speech — see the text!');
+            }
+
+            addStars(1);
+            playBeep(true);
+            mascotSay(`In Odia, "${entry.en}" is "${entry.odia}"! 🇮🇳`);
+        }
+
+        function pickAndSpeak(voices, utter, status) {
+            // Try Odia (or-IN), then Hindi (hi-IN), then any Indian voice, then English
+            const odiaVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('or'));
+            const hindiVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('hi'));
+            const indianVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes('in'));
+            const englishVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+
+            if (odiaVoice) {
+                utter.voice = odiaVoice;
+                status.textContent = '🔊 Speaking in Odia voice!';
+            } else if (hindiVoice) {
+                utter.voice = hindiVoice;
+                status.textContent = '🔊 Using Hindi voice (closest available) — Odia text shown!';
+                showToast('Using Hindi voice as fallback — Odia script shown.');
+            } else if (indianVoice) {
+                utter.voice = indianVoice;
+                status.textContent = '🔊 Using an Indian voice — Odia text shown!';
+            } else if (englishVoice) {
+                utter.voice = englishVoice;
+                // Also speak the English word so it's understandable
+                status.textContent = '🔊 Using English voice — Odia text shown above!';
+                showToast('No Odia or Hindi voice — try a different browser (Chrome/Edge).');
+            } else {
+                // Last resort: just use default voice
+                status.textContent = '🔊 Using default voice — Odia text shown!';
+                showToast('Using default voice — Odia script is displayed.');
+            }
+
+            // Set language tag to Odia for better pronunciation attempt
+            utter.lang = 'or-IN';
+
+            // Speak
+            speechSynthesis.speak(utter);
+
+            utter.onend = () => {
+                status.textContent = '✅ Done speaking! Tap again to hear.';
+            };
+
+            utter.onerror = (e) => {
+                status.textContent = '⚠️ Could not speak — but Odia text is shown!';
+                console.warn('Speech error:', e);
+            };
+        }
+
+        function findOdiaEntry(word) {
+            const clean = word.trim().toLowerCase();
+            return odiaDict.find(e => e.en === clean);
+        }
+
+        document.getElementById('odiaSpeakBtn').addEventListener('click', () => {
+            const word = document.getElementById('odiaInput').value;
+            if (!word.trim()) {
+                showToast('Type a word first!');
+                return;
+            }
+            const entry = findOdiaEntry(word);
+            if (entry) {
+                speakOdia(entry);
+            } else {
+                showToast("I don't know that word yet — try one from the pictures below!");
+                mascotSay("Try tapping a picture — I know those words for sure!");
+            }
+        });
+        document.getElementById('odiaInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') document.getElementById('odiaSpeakBtn').click();
+        });
+
+        (function buildOdiaWordGrid() {
+            const grid = document.getElementById('odiaWordGrid');
+            odiaDict.slice(0, 16).forEach(entry => {
+                const chip = document.createElement('div');
+                chip.className = 'odia-word-chip';
+                chip.innerHTML = `<span class="emoji">${entry.emoji}</span>${entry.en}`;
+                chip.addEventListener('click', () => {
+                    document.getElementById('odiaInput').value = entry.en;
+                    speakOdia(entry);
+                });
+                grid.appendChild(chip);
+            });
+        })();
+
+        // ======================================================================
+        //  SNAP & GUESS (OBJECT IDENTIFICATION with ml5 cocossd)
+        // ======================================================================
+        const snapVideo = document.getElementById('snapVideo');
+        const snapCanvas = document.getElementById('snapCanvas');
+        const snapStartBtn = document.getElementById('snapStartBtn');
+        const snapShotBtn = document.getElementById('snapShotBtn');
+        const snapRetryBtn = document.getElementById('snapRetryBtn');
+        const snapStatus = document.getElementById('snapStatus');
+        const snapTags = document.getElementById('snapTags');
+        let snapStream = null;
+        let snapDetector = null;
+        let snapModelReady = false;
+
+        const friendlyNames = {
+            'person': '🧑 A Human!',
+            'cell phone': '📱 A Phone!',
+            'laptop': '💻 A Laptop!',
+            'book': '📓 A Book / Notebook!',
+            'keyboard': '⌨️ A Keyboard!',
+            'mouse': '🖱️ A Mouse!',
+            'cup': '☕ A Cup!',
+            'bottle': '🍶 A Bottle!',
+            'chair': '🪑 A Chair!',
+            'clock': '🕒 A Clock!',
+            'scissors': '✂️ Scissors!',
+            'backpack': '🎒 A Backpack!',
+            'teddy bear': '🧸 A Teddy Bear!',
+            'remote': '📺 A Remote!',
+            'tv': '📺 A TV!'
+        };
+
+        // Try loading ml5 detector with a timeout
+        try {
+            if (typeof ml5 !== 'undefined' && ml5.objectDetector) {
+                snapDetector = ml5.objectDetector('cocossd', () => {
+                    snapModelReady = true;
+                    snapStatus.textContent = '✅ AI model ready! Tap "Start Camera".';
+                });
+                // If model takes too long, show a message
+                setTimeout(() => {
+                    if (!snapModelReady) {
+                        snapStatus.textContent = '⏳ AI model still loading (check internet) — you can still use the camera!';
+                    }
+                }, 5000);
+            } else {
+                snapStatus.textContent = '⚠️ ml5 library not loaded. Please check your internet connection and refresh.';
+            }
+        } catch (e) {
+            snapStatus.textContent = '⚠️ AI library error: ' + e.message;
+        }
+
+        snapStartBtn.addEventListener('click', async () => {
+            try {
+                snapStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                snapVideo.srcObject = snapStream;
+                snapVideo.classList.remove('hidden');
+                snapCanvas.classList.add('hidden');
+                snapShotBtn.disabled = false;
+                snapRetryBtn.classList.add('hidden');
+                snapTags.innerHTML = '';
+                snapStatus.textContent = snapModelReady ?
+                    '📷 Camera on — point at something and tap Snap Photo!' :
+                    '📷 Camera on — AI model still loading, but you can snap!';
+            } catch (err) {
+                snapStatus.textContent = '❌ Camera error: ' + err.message;
+            }
+        });
+
+        snapShotBtn.addEventListener('click', async () => {
+            const w = snapVideo.videoWidth || 480;
+            const h = snapVideo.videoHeight || 360;
+            snapCanvas.width = w;
+            snapCanvas.height = h;
+            const sctx = snapCanvas.getContext('2d');
+            sctx.drawImage(snapVideo, 0, 0, w, h);
+
+            snapVideo.classList.add('hidden');
+            snapCanvas.classList.remove('hidden');
+            snapShotBtn.disabled = true;
+            snapRetryBtn.classList.remove('hidden');
+            snapTags.innerHTML = '';
+            snapStatus.textContent = '🤔 AI is thinking about what it sees…';
+
+            if (snapStream) {
+                snapStream.getTracks().forEach(t => t.stop());
+            }
+
+            if (!snapDetector || !snapModelReady) {
+                snapStatus.textContent = '⏳ AI model is still loading — trying anyway with a simple guess…';
+                // Simple fallback: just show a generic message
+                snapTags.innerHTML = '<div class="snap-tag">🤖 AI is loading — try again in a few seconds!</div>';
+                mascotSay("I'm still warming up my brain! Try again in a moment.");
+                return;
+            }
+
+            snapDetector.detect(snapCanvas, (err, results) => {
+                if (err) {
+                    snapStatus.textContent = '❌ AI had trouble looking at the photo.';
+                    console.error(err);
+                    snapTags.innerHTML = '<div class="snap-tag">🤷 Oops! Something went wrong — try again.</div>';
+                    return;
+                }
+                sctx.lineWidth = 4;
+                sctx.strokeStyle = '#00BFB3';
+                sctx.font = '20px sans-serif';
+                sctx.fillStyle = '#00BFB3';
+
+                if (!results || results.length === 0) {
+                    snapStatus.textContent = "🤷 AI couldn't spot anything clear — try again with better light!";
+                    snapTags.innerHTML = '<div class="snap-tag">🤔 Nothing recognised — try again!</div>';
+                    mascotSay("Try moving closer or turning on more light!");
+                    return;
+                }
+
+                results.forEach(r => {
+                    sctx.strokeRect(r.x, r.y, r.width, r.height);
+                    const label = r.label || 'object';
+                    sctx.fillText(label, r.x + 4, Math.max(18, r.y - 6));
+
+                    const friendly = friendlyNames[label] || ('🔎 ' + label.charAt(0).toUpperCase() + label.slice(1));
+                    const tag = document.createElement('div');
+                    tag.className = 'snap-tag';
+                    tag.innerHTML =
+                        `${friendly} <span style="opacity:0.7;font-weight:600;">(${Math.round((r.confidence||0)*100)}%)</span>`;
+                    snapTags.appendChild(tag);
+                });
+
+                snapStatus.textContent = `✅ AI found ${results.length} thing${results.length > 1 ? 's' : ''}!`;
+                addStars(1);
+                playBeep(true);
+                launchConfetti(20);
+                mascotSay("Nice snap! I used my camera-eyes to find that! 👀");
+            });
+        });
+
+        snapRetryBtn.addEventListener('click', () => {
+            snapStartBtn.click();
+        });
+
+        // ======================================================================
+        //  DRAW & GUESS (DoodleNet via ml5)
+        // ======================================================================
+        const drawCanvas = document.getElementById('drawCanvas');
+        const drawCtx = drawCanvas.getContext('2d');
+        let drawing = false;
+        let drawColor = '#1B1F4B';
+        let drawClassifier = null;
+        let drawModelReady = false;
+
+        function setupDrawCanvas() {
+            drawCtx.fillStyle = '#ffffff';
+            drawCtx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+            drawCtx.lineWidth = 8;
+            drawCtx.lineCap = 'round';
+            drawCtx.lineJoin = 'round';
+            drawCtx.strokeStyle = drawColor;
+        }
+        setupDrawCanvas();
+
+        function drawPos(e) {
+            const rect = drawCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: (clientX - rect.left) * (drawCanvas.width / rect.width),
+                y: (clientY - rect.top) * (drawCanvas.height / rect.height)
+            };
+        }
+
+        function startDraw(e) {
+            drawing = true;
+            const p = drawPos(e);
+            drawCtx.beginPath();
+            drawCtx.moveTo(p.x, p.y);
+            e.preventDefault();
+        }
+
+        function moveDraw(e) {
+            if (!drawing) return;
+            const p = drawPos(e);
+            drawCtx.lineTo(p.x, p.y);
+            drawCtx.strokeStyle = drawColor;
+            drawCtx.stroke();
+            e.preventDefault();
+        }
+
+        function endDraw(e) {
+            drawing = false;
+        }
+        drawCanvas.addEventListener('mousedown', startDraw);
+        drawCanvas.addEventListener('mousemove', moveDraw);
+        window.addEventListener('mouseup', endDraw);
+        drawCanvas.addEventListener('touchstart', startDraw, { passive: false });
+        drawCanvas.addEventListener('touchmove', moveDraw, { passive: false });
+        drawCanvas.addEventListener('touchend', endDraw);
+
+        (function buildColorSwatches() {
+            const colors = ['#1B1F4B', '#ff6b6b', '#7C5CFC', '#00BFB3', '#FFAE00', '#000000'];
+            const wrap = document.getElementById('colorSwatches');
+            colors.forEach((c, i) => {
+                const sw = document.createElement('div');
+                sw.className = 'color-swatch' + (i === 0 ? ' active' : '');
+                sw.style.background = c;
+                sw.addEventListener('click', () => {
+                    drawColor = c;
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+                    sw.classList.add('active');
+                });
+                wrap.appendChild(sw);
+            });
+        })();
+
+        document.getElementById('drawClearBtn').addEventListener('click', () => {
+            setupDrawCanvas();
+            document.getElementById('drawGuessResult').classList.add('hidden');
+        });
+
+        // Try loading DoodleNet with timeout
+        try {
+            if (typeof ml5 !== 'undefined' && ml5.imageClassifier) {
+                drawClassifier = ml5.imageClassifier('DoodleNet', () => {
+                    drawModelReady = true;
+                });
+                setTimeout(() => {
+                    if (!drawModelReady) {
+                        console.warn('DoodleNet still loading...');
+                    }
+                }, 4000);
+            } else {
+                console.warn('ml5 not available for DoodleNet');
+            }
+        } catch (e) {
+            console.warn('DoodleNet load error:', e);
+        }
+
+        document.getElementById('drawGuessBtn').addEventListener('click', () => {
+            const resultBox = document.getElementById('drawGuessResult');
+            const list = document.getElementById('drawGuessList');
+            resultBox.classList.remove('hidden');
+
+            if (!drawClassifier || !drawModelReady) {
+                list.innerHTML =
+                    '<div class="draw-guess-item">⏳ AI model still loading — please wait a moment and try again!</div>';
+                mascotSay("I'm still waking up my doodle brain! Give me a few seconds.");
+                return;
+            }
+            list.innerHTML = '<div class="draw-guess-item">🤔 Thinking…</div>';
+
+            drawClassifier.classify(drawCanvas, (err, results) => {
+                if (err || !results || results.length === 0) {
+                    list.innerHTML = '<div class="draw-guess-item">🤷 AI could not guess this one — try again!</div>';
+                    mascotSay("Tricky drawing! Try adding a few more details.");
+                    return;
+                }
+                list.innerHTML = '';
+                results.slice(0, 3).forEach(r => {
+                    const pct = Math.round(r.confidence * 100);
+                    const row = document.createElement('div');
+                    row.className = 'draw-guess-item';
+                    row.innerHTML =
+                        `<span>${r.label}</span><div class="draw-guess-bar"><div class="fill" style="width:${pct}%;"></div></div><span>${pct}%</span>`;
+                    list.appendChild(row);
+                });
+                addStars(1);
+                playBeep(true);
+                launchConfetti(20);
+                mascotSay(`I think that's a "${results[0].label}"! Am I right? 🎨`);
+            });
+        });
+
+        // ======================================================================
+        //  FACE DETECTOR
+        // ======================================================================
+        const video = document.getElementById('videoFeed');
+        const canvas = document.getElementById('faceCanvas');
+        const ctx = canvas.getContext('2d');
+        const faceStartBtn = document.getElementById('faceStartBtn');
+        const faceStopBtn = document.getElementById('faceStopBtn');
+        const faceStatus = document.getElementById('faceStatus');
+        let stream = null;
+        let faceDetectionInterval = null;
+        let faceDetector = null;
+
+        if ('FaceDetector' in window) {
+            faceDetector = new FaceDetector({
+                maxDetectedFaces: 5,
+                fastMode: true
+            });
+        } else {
+            faceStatus.textContent = '⚠️ FaceDetector not supported. Try Chrome 70+ or Edge.';
+            faceStartBtn.disabled = true;
+        }
+
+        async function startFaceDetection() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                video.srcObject = stream;
+                video.play();
+                faceStatus.textContent = '📷 Camera on – detecting faces...';
+                faceStartBtn.disabled = true;
+
+                const resizeCanvas = () => {
+                    const rect = video.getBoundingClientRect();
+                    canvas.width = rect.width || video.videoWidth || 640;
+                    canvas.height = rect.height || video.videoHeight || 480;
+                };
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                faceDetectionInterval = setInterval(async () => {
+                    if (video.readyState !== video.HAVE_ENOUGH_DATA) return;
+                    try {
+                        const faces = await faceDetector.detect(video);
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.strokeStyle = '#00BFB3';
+                        ctx.lineWidth = 3;
+                        faces.forEach(face => {
+                            const box = face.boundingBox;
+                            ctx.strokeRect(box.x, box.y, box.width, box.height);
+                            ctx.fillStyle = '#00BFB3';
+                            ctx.font = '16px sans-serif';
+                            ctx.fillText('👤', box.x, box.y - 8);
+                        });
+                        if (faces.length === 0) {
+                            ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                            ctx.font = '20px sans-serif';
+                            ctx.fillText('No faces found', 20, 40);
+                        }
+                    } catch (e) {
+                        // ignore
+                    }
+                }, 100);
+            } catch (err) {
+                faceStatus.textContent = '❌ Camera error: ' + err.message;
+                faceStartBtn.disabled = false;
+            }
+        }
+
+        function stopFaceDetection() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+                video.srcObject = null;
+            }
+            if (faceDetectionInterval) {
+                clearInterval(faceDetectionInterval);
+                faceDetectionInterval = null;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            faceStatus.textContent = 'Camera off';
+            faceStartBtn.disabled = false;
+        }
+
+        faceStartBtn.addEventListener('click', startFaceDetection);
+        faceStopBtn.addEventListener('click', stopFaceDetection);
+
+        // ======================================================================
+        //  CHARTS
+        // ======================================================================
+        let chartDomainInstance = null;
+
+        function initCharts() {
+            chartDomainInstance = new Chart(document.getElementById('chartDomain'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Data Science', 'Computer Vision', 'NLP'],
+                    datasets: [{ data: [45, 30, 25], backgroundColor: ['#7C5CFC', '#00BFB3', '#FFAE00'], borderWidth: 0 }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+            });
+
+            new Chart(document.getElementById('chartTechnique'), {
+                type: 'bar',
+                data: {
+                    labels: ['Classification', 'Regression', 'Clustering'],
+                    datasets: [{ label: 'Usage %', data: [55, 30, 15], backgroundColor: ['#7C5CFC', '#00BFB3',
+                            '#FFAE00'
+                        ], borderRadius: 8 }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true,
+                            max: 100, grid: { color: '#f0f0f8' } } } }
+            });
+
+            new Chart(document.getElementById('chartGrowth'), {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{ label: 'AI Adoption', data: [30, 42, 55, 68, 78, 88, 95], borderColor: '#7C5CFC',
+                        backgroundColor: 'rgba(124,92,252,0.08)', fill: true, tension: 0.3,
+                        pointBackgroundColor: '#7C5CFC', pointRadius: 4 }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true,
+                            max: 100, grid: { color: '#f0f0f8' } }, x: { grid: { display: false } } } }
+            });
+
+            document.querySelectorAll('[data-domain-view]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const view = btn.dataset.domainView;
+                    chartDomainInstance.config.type = view;
+                    chartDomainInstance.update();
+                });
+            });
+        }
+
+        // ======================================================================
+        //  FUN FACTS
+        // ======================================================================
+        const funFacts = [
+            "AI can learn to play chess by playing millions of games against itself! ♟️",
+            "The word 'robot' comes from a Czech word meaning 'forced labour'! 🤖",
+            "Some AI models can paint pictures in the style of famous artists! 🎨",
+            "AI doesn't 'think' like humans — it finds patterns in lots of examples! 🔍",
+            "Odisha's Konark Sun Temple inspired the design of India's ₹10 note! ☀️",
+            "The first chatbot, ELIZA, was made way back in 1966! 💬",
+            "AI helps doctors spot tiny problems in X-ray images! 🩻",
+            "Self-driving cars use computer vision to 'see' the road! 🚗",
+            "Your phone's autocorrect uses AI to guess the next word! ⌨️",
+            "AI can translate between over 100 languages, including Odia! 🌍"
+        ];
+        document.getElementById('funFactBtn').addEventListener('click', () => {
+            const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
+            document.getElementById('funFactText').textContent = fact;
+            playBeep(true);
+        });
+
+        // ======================================================================
+        //  INIT
+        // ======================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            renderQuiz();
+            initMatchGame();
+            renderExam();
+            initCharts();
+            resizeRegCanvas();
+            initSortGame();
+            initClusterGame();
+            updatePrice(1500);
+            initPriceChart();
+            updatePrice(1500);
+
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = document.querySelector(link.getAttribute('href'));
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+        });
+
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => { /* voices load async */ };
+        }
+    </script>
 </body>
 </html>
