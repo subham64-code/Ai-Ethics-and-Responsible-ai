@@ -74,4 +74,4 @@ Contributions are welcome! Please feel free to submit issues and enhancement req
 
 ---
 
-**Made with ❤️ for education and AI literacy**
+**Made with ❤️ for education and AI literacy by subham64-code**
